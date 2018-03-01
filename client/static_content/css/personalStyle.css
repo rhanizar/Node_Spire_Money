@@ -1,0 +1,133 @@
+/*.miniBarItem{
+	color : #fff;
+	padding: 10px 7px;
+	text-align: center;
+}
+
+.miniBarItem:hover{
+	opacity: 0.5;
+}
+*/
+/*.miniBarItem .glyphicon-arrow-up,*/ .panelSymbolMain .glyphicon-arrow-up{
+	color: rgb(61, 148, 0);
+}
+
+/*.miniBarItem .glyphicon-arrow-down, */.panelSymbolMain .glyphicon-arrow-down{
+	color: rgb(255, 0, 0);
+}
+
+#mapContainer{
+	width: 100%;
+	height: 540px;
+}
+
+.center{
+	display: block;
+	text-align: center;
+}
+
+.panelSymbolMain{
+	display: inline-block;
+	float: left;
+	padding-left: 20px;
+}
+
+.panelBrandLogo{
+	display: inline-block;
+	float: left;
+	padding-left: 3px;
+}
+
+.panelVolume{
+	float: left;
+	padding-left: 8px;
+	padding-top: 8px;
+	font-size: large;
+}
+
+.panelSymbol{
+	color: rgb(8,9,188);
+	font-size: 2em;
+	padding-left: 8px;
+}
+
+.panelClosePrice{
+	padding-left: 8px;
+	padding-top: 8px;
+	font-size: 2em;
+}
+
+.up{
+	color: rgb(61, 148, 0);
+}
+
+.down{
+	color: rgb(255, 0, 0);
+}
+.panelCloseState{
+	font-size: 1.4em;
+}
+.panelCloseChange{
+
+}
+
+.openHelp{
+	color : rgb(75, 175, 254);
+}
+
+.highHelp{
+	color : rgb(61, 148, 0);
+}
+
+.lowHelp{
+	color : rgb(255, 0, 0);
+}
+
+.closeHelp{
+	color : rgb(255, 194, 15);
+}
+
+.dropdown-settings li{
+	color: black;
+	font-weight: bold;
+}
+
+.dataSeriesChart{
+	display: inline-block;
+    vertical-align: baseline;
+	width: 993px;
+    height: 331px;
+}
+
+.aboutLogo{
+	float: left;
+}
+
+.aboutCompanyName{
+	font-size: 2em;
+}
+
+.companiesLogo{
+	float: left;	
+}
+
+.companiesSymbolName{
+	float: left;
+	color: rgb(8,9,188);
+	font-size: 2em;
+	padding-left: 8px;
+	width : 100%;
+	text-align: center;
+}
+
+.companiesPanelBody{
+	/*line-height: 100px;
+    height: 100px;*/
+     display:flex;
+    align-items:center;
+}
+
+.livePanel{
+	width: 100%;
+	height: 540px;
+}
