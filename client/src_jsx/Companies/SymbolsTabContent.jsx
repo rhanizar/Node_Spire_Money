@@ -43,7 +43,7 @@ export default class SymbolsTabContent extends React.Component{
 }
 
 SymbolsTabContent.propTypes = {
-	className : PropTypes.string.isRequired,
+	className : PropTypes.string,
 	id : PropTypes.string.isRequired,
 	symbols : PropTypes.array.isRequired
 };

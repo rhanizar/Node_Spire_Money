@@ -11,9 +11,19 @@ import AccountPanel from './MyAccount/AccountPanel';
 const selectedSymbol = 'MSFT';
 export default class TabContent extends React.Component {
 	render(){
+		let content;
+		switch(this.props.activeItem){
+			case 'dashboard' : content = (<Dashboard symbol={selectedSymbol} />); break;
+			case 'companies' : content = (<SymbolsPanel symbols={this.props.symbols} />); break;
+			case 'live'      : content = (<LivePanel />); break;
+			case 'map'       : content = (<MapPanel />); break;
+			case 'account'   :  content = (<AccountPanel user={this.props.user} />); break;
+			case 'logout'    : content = (<h1> Logout [To Do] </h1>); break;
+		}
+
 		return (
 			<div className="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
-				<AccountPanel user={this.props.user} />
+				{content}
 			</div>
 		);
 	}
@@ -22,4 +32,5 @@ export default class TabContent extends React.Component {
 TabContent.propTypes = {
 	symbols : PropTypes.array.isRequired,
 	user : PropTypes.object.isRequired,
+	activeItem : PropTypes.string.isRequired,
 };

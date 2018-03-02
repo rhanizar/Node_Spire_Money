@@ -22,7 +22,7 @@ export default class SideBar extends React.Component{
 		let key;
 		for (key in items){
 			let item = items[key];
-			buttons.push(<SideBarButton icon={item.icon} className={item.className} label={item.label} key={item.label} />);
+			buttons.push(<SideBarButton id={key} onClick={this.props.onChangeLocation} icon={item.icon} className={item.className} label={item.label} key={item.label} />);
 		}
 
 		return (
@@ -51,4 +51,5 @@ SideBar.propTypes = {
 	activeItem : PropTypes.string.isRequired,
 	name : PropTypes.string.isRequired,
 	symbols : PropTypes.array.isRequired,
+	onChangeLocation : PropTypes.func.isRequired,
 };

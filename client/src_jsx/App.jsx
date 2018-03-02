@@ -33,6 +33,16 @@ const symbols = [
   {symbol : "IIS",  company : "IIS Company"}];
 
 class App extends React.Component{
+  constructor(props) {
+    super(props);
+    this.state = { activeItem : 'dashboard' };
+    this.handleChangeLocation = this.handleChangeLocation.bind(this);
+  }
+
+  handleChangeLocation(newActiveItem){
+    this.setState({ activeItem : newActiveItem });
+  }
+
   render(){
     const user = {name : 'Account name', email : 'email@email.com', username : 'user_2016'};
     const activeItem = 'dashboard';
@@ -42,17 +52,19 @@ class App extends React.Component{
     let keyValArr =[];
     symbols.forEach((element) => {
       let init = element.symbol.charAt(0).toUpperCase();
+
       if (keyValArr[init] == undefined)
-        keyValArr[init] = [element];
+          keyValArr[init] = [element];
       else
-        keyValArr[init].push(element);
+          keyValArr[init].push(element);
     });
 
     return (
       <div>
         <NavBar />
-        <SideBar name={user.name} symbols={keyValArr} activeItem={activeItem} />
-        <TabContent symbols={keyValArr} user={user}/>
+        <SideBar onChangeLocation={this.handleChangeLocation} name={user.name}
+          symbols={keyValArr} activeItem={this.state.activeItem} />
+        <TabContent symbols={keyValArr} user={user} activeItem={this.state.activeItem} />
       </div>
     );
   }
