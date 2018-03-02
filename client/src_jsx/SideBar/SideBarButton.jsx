@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
 
 export default class SideBarButton extends React.Component{
 	render(){
@@ -16,3 +17,9 @@ export default class SideBarButton extends React.Component{
 		);
 	}
 }
+
+SideBarButton.propTypes = {
+	label : PropTypes.string.isRequired,
+	className : PropTypes.string,
+	icon : PropTypes.string.isRequired,
+};

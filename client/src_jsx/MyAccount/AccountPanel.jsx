@@ -4,17 +4,9 @@ import TabContentHeader from '../TabContentHeader';
 
 
 export default class AccountPanel extends React.Component {
-	constructor(props) {
-	    super(props);
 
-	    this.handleChange = this.handleChange.bind(this);
-	  }
-
-	handleChange(event) {
-		console.log("45516-");
-		event.preventDefault();
-	}
-	render(){		
+	render(){
+		const user = this.props.user;
 		return (
 			<div>
 				<TabContentHeader title="My account" />
@@ -32,7 +24,7 @@ export default class AccountPanel extends React.Component {
 												<div className="input-group">
 													<span className="input-group-addon"><i className="fa fa-user fa" aria-hidden="true"></i></span>
 													
-													<input type="text" className="form-control" name="name" id="name" defaultValue="John doe" />
+													<input type="text" className="form-control" name="name" id="name" defaultValue={user.name} />
 												</div>
 											</div>
 										</div>
@@ -43,7 +35,7 @@ export default class AccountPanel extends React.Component {
 												<div className="input-group">
 													<span className="input-group-addon"><i className="fa fa-envelope fa" aria-hidden="true"></i></span>
 													
-													<input type="text" className="form-control" name="email" id="email" defaultValue="Example@gmail.com" />
+													<input type="text" className="form-control" name="email" id="email" defaultValue={user.email} />
 												</div>
 											</div>
 										</div>
@@ -54,7 +46,7 @@ export default class AccountPanel extends React.Component {
 												<div className="input-group">
 													<span className="input-group-addon"><i className="fa fa-users fa" aria-hidden="true"></i></span>
 													
-													<input type="text" className="form-control" name="username" id="username"  defaultValue="john2013" />
+													<input type="text" className="form-control" name="username" id="username"  value={user.username} readOnly />
 												</div>
 											</div>
 										</div>

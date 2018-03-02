@@ -1,22 +1,27 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-
+import PropTypes from 'prop-types';
 export default class AboutCompany extends React.Component {
 	render(){
+		const company = this.props.company;
 		return (
 			<div className="panel panel-info">
-				<div className="panel-heading">About Microsoft
+				<div className="panel-heading">About {company}
 					<span className="pull-right clickable panel-toggle">
 						<em className="fa fa-toggle-up"></em>
 					</span>
 				</div>
 				<div className="panel-body">
-					<img src="img/microsoft_logo.jpg" className="aboutLogo" height="80" />
-					<label className="aboutCompanyName">Microsoft</label>
-					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ut ante in sapien 
-					blandit luctus sed ut lacus. Phasellus urna est, faucibus nec ultrices placerat, feugiat et ligula. Donec vestibulum magna a dui pharetra molestie. Fusce et dui urna.</p>
+					<img src={`img/${company}_logo.jpg`} className="aboutLogo" height="80" />
+					<label className="aboutCompanyName">{company}</label>
+					<p>{this.props.about}</p>
 				</div>
 			</div>
 		);
 	}
 }
+
+AboutCompany.propTypes = {
+	company : PropTypes.string.isRequired,
+	about : PropTypes.string.isRequired,
+};

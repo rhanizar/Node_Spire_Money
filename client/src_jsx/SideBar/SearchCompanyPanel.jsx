@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
 
 export default class SearchCompanyPanel extends React.Component{
 	render(){
@@ -35,3 +36,7 @@ export default class SearchCompanyPanel extends React.Component{
 		);
 	}
 }
+
+SearchCompanyPanel.propTypes = {
+	symbols : PropTypes.array.isRequired
+};

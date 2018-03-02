@@ -19,7 +19,6 @@ import 'whatwg-fetch';
     }).catch(err => {
       alert("Error in sending data to server: " + err.message);
     });*/
-const name = 'Name (props)';
 const symbols = [
   {symbol : "AAPL", company : "Apple"},
   {symbol : "AMX",  company : "Amx com"},
@@ -35,7 +34,7 @@ const symbols = [
 
 class App extends React.Component{
   render(){
-
+    const user = {name : 'Account name', email : 'email@email.com', username : 'user_2016'};
     const activeItem = 'dashboard';
 
     symbols.sort((obj1, obj2) =>  obj1.symbol.localeCompare(obj2.symbol));
@@ -52,8 +51,8 @@ class App extends React.Component{
     return (
       <div>
         <NavBar />
-        <SideBar name={name} symbols={keyValArr} activeItem={activeItem} />
-        <TabContent symbols={keyValArr}/>
+        <SideBar name={user.name} symbols={keyValArr} activeItem={activeItem} />
+        <TabContent symbols={keyValArr} user={user}/>
       </div>
     );
   }

@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
+
 import SideBarButton from './SideBarButton';
 import SearchCompanyPanel from './SearchCompanyPanel';
 
@@ -27,7 +29,7 @@ export default class SideBar extends React.Component{
 			<div id="sidebar-collapse" className="col-sm-3 col-lg-2 sidebar">
 				<div className="profile-sidebar">
 					<div className="profile-userpic">
-						<img src="http://placehold.it/50/30a5ff/fff" className="img-responsive" alt="" />
+						<img src="img/user_icon.png" className="img-responsive" alt="" />
 					</div>
 					<div className="profile-usertitle">
 						<div className="profile-usertitle-name">{this.props.name}</div>
@@ -44,3 +46,9 @@ export default class SideBar extends React.Component{
 		);
 	}
 }
+
+SideBar.propTypes = {
+	activeItem : PropTypes.string.isRequired,
+	name : PropTypes.string.isRequired,
+	symbols : PropTypes.array.isRequired,
+};

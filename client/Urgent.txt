@@ -1,2 +1,3 @@
 -> app.get => /login => Test de connexion
 -> app.get => /register => Test de connexion
+!! -> Spécifier les modules à compiler par webpack => vendor

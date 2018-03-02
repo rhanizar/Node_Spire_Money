@@ -1,32 +1,31 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
 
 export default class NewsPanel extends React.Component {
 	render(){
+		const NewsItem = (props) => {
+			return (<li className="news-item">
+				{props.news.substr(0, 44)} ...<a href={props.url}>Read more</a>
+			</li>);
+		}
+		let i = 0;
+		const content = this.props.news.map((newsElement) => {
+			i++;
+			return (<NewsItem news={newsElement.title} url={newsElement.url} key={i}/>);
+		});
+
 		return (
-			<div className="panel panel-danger">
+			<div className={`panel ${this.props.className}`}>
 				<div className="panel-heading">
-				  Latest News
+				  {this.props.title} news
 				</div>
 
 				<div className="panel-body">
 					<div className="row">
 						<div className="col-xs-12">
 						<ul className="news-demo-down-auto">
-						<li className="news-item">Python new version is released..
-							<a href="#">Read more</a>
-						</li>
-
-						<li className="news-item">Get ready for Bootstrap 4... <a href="#">Read more</a></li>
-						 
-						<li className="news-item">New forms in Bootstrap.. <a href="#">Read more</a></li>
-						 
-						<li className="news-item">PHP date ... <a href="#">Read more</a></li>
-						 
-						<li className="news-item">Read about Java update ... <a href="#">Read more</a></li>
-						 
-						<li className="news-item">HTML 5... <a href="#">Read more</a></li>
-						 
+							{content}
 						</ul>
 						 
 						</div>
@@ -38,3 +37,9 @@ export default class NewsPanel extends React.Component {
 		);
 	}
 }
+
+NewsPanel.propTypes = {
+	news : PropTypes.array.isRequired,
+	className : PropTypes.string.isRequired,
+	title : PropTypes.string.isRequired
+};
