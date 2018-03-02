@@ -9,6 +9,7 @@ import MapPanel from './Map/MapPanel';
 import AccountPanel from './MyAccount/AccountPanel';
 
 const selectedSymbol = 'MSFT';
+
 export default class TabContent extends React.Component {
 	render(){
 		let content;

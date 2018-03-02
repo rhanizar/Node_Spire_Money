@@ -14,7 +14,6 @@ export default class SymbolsPanel extends React.Component{
 		const tabsHeader = [];
 
 		for (alpha in keyValArr){
-			console.log("Alpha " + alpha);
 			tabsHeader.push(<li className={headerActive[alpha]} key={`${alpha}Tab`}> <a href={`#${alpha}`} data-toggle="tab"> {alpha} </a> </li>);
 			tabsContent.push(
 				<SymbolsTabContent className={active[alpha]} id={alpha} symbols={keyValArr[alpha]} key={alpha} />

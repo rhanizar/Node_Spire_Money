@@ -4,6 +4,7 @@ import Symbol from './Symbol';
 import PropTypes from 'prop-types';
 
 const PANELS_PER_LINE = 3;
+
 export default class SymbolsTabContent extends React.Component{
 	render(){
 		let symbols = this.props.symbols;

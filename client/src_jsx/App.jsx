@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import NavBar from './NavBar';
 import SideBar from './SideBar/SideBar';
 import TabContent from './TabContent';
+//import $ from "jquery";
 import 'whatwg-fetch';
 
 /*fetch('/api/3', {
@@ -19,6 +20,8 @@ import 'whatwg-fetch';
     }).catch(err => {
       alert("Error in sending data to server: " + err.message);
     });*/
+    
+const user = {name : 'Account name', email : 'email@email.com', username : 'user_2016'};
 const symbols = [
   {symbol : "AAPL", company : "Apple"},
   {symbol : "AMX",  company : "Amx com"},
@@ -44,9 +47,6 @@ class App extends React.Component{
   }
 
   render(){
-    const user = {name : 'Account name', email : 'email@email.com', username : 'user_2016'};
-    const activeItem = 'dashboard';
-
     symbols.sort((obj1, obj2) =>  obj1.symbol.localeCompare(obj2.symbol));
 
     let keyValArr =[];

@@ -1,36 +1,3 @@
-
-$(function () {
- 
-       $(".news-demo-down-auto").bootstrapNews({
- 
-            newsPerPage: 3,
- 
-            autoplay: true,
- 
-            pauseOnHover: true,
- 
-            navigation: false,
- 
-            direction: 'down',
- 
-            newsTickerInterval: 1500,
- 
-            onToDo: function () {
- 
-            }
- 
-        });
- 
-    });
-
-/*
- * jQuery Bootstrap News Box v1.0.1
- *
- * Copyright 2014, Dragan Mitrovic
- * email: gagi270683@gmail.com
- * Free to use and abuse under the MIT license.
- * http://www.opensource.org/licenses/mit-license.php
- */
 if (typeof Object.create !== "function") {
     Object.create = function(e) {
         function t() {}
@@ -236,3 +203,36 @@ if (typeof Object.create !== "function") {
         onToDo: null
     }
 })(jQuery, window, document)
+
+$(function () {
+ 
+       jQuery(".news-demo-down-auto").bootstrapNews({
+ 
+            newsPerPage: 3,
+ 
+            autoplay: true,
+ 
+            pauseOnHover: true,
+ 
+            navigation: false,
+ 
+            direction: 'down',
+ 
+            newsTickerInterval: 1500,
+ 
+            onToDo: function () {
+ 
+            }
+ 
+        });
+ 
+    });
+
+/*
+ * jQuery Bootstrap News Box v1.0.1
+ *
+ * Copyright 2014, Dragan Mitrovic
+ * email: gagi270683@gmail.com
+ * Free to use and abuse under the MIT license.
+ * http://www.opensource.org/licenses/mit-license.php
+ */

@@ -1,3 +1,5 @@
 -> app.get => /login => Test de connexion
 -> app.get => /register => Test de connexion
 !! -> Spécifier les modules à compiler par webpack => vendor
+!!->shouldComponentUpdate => Optimizing performance
+I) Lors de clique sur chaque point, on va afficher un panneau qui contient tous les news liées à ce point
