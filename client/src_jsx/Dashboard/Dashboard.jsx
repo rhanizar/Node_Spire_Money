@@ -39,7 +39,7 @@ const symbolNews = [
 ];
 
 const news={
-		link : 'https://www.forbes.com/sites/joannmuller/2018/02/16/tesla-thinks-it-will-school-toyota-on-lean-manufacturing-fixing-model-3-launch-would-be-a-start',
+		url : 'https://www.forbes.com/sites/joannmuller/2018/02/16/tesla-thinks-it-will-school-toyota-on-lean-manufacturing-fixing-model-3-launch-would-be-a-start',
 		title : 'Musk Thinks Tesla Will School Toyota On Lean Manufacturing; Fixing Model 3 Launch Would Be A Start'
 	};
 
@@ -87,7 +87,7 @@ const data = [
 export default class Dashboard extends React.Component{
 	constructor(props){
 		super(props);
-		this.company = this.companyFromSymbol(props.symbol);
+		this.company = this.companyFromSymbol(this.props.symbol);
 		this.chart = null;
 		this.open  = [];
 		this.high  = [];
@@ -210,7 +210,7 @@ export default class Dashboard extends React.Component{
 	}
 
 	onclick(e){
-		window.open(e.dataPoint.news.link,'_blank');
+		window.open(e.dataPoint.news.url,'_blank');
 	}
 
 	pushData(info) {
@@ -264,14 +264,17 @@ export default class Dashboard extends React.Component{
 		this.chart.options.data[3].dataPoints = this.close;
 	}
 
-	componentDidMount(){
-		LoadScript('js/news.js');
-	}
-
 	companyFromSymbol(symbol){
 		const aboutCompany = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ut ante in sapien blandit luctus sed ut lacus. Phasellus urna est, faucibus nec ultrices placerat, feugiat et ligula. Donec vestibulum magna a dui pharetra molestie. Fusce et dui urna.';
 		const company = { name : 'Microsoft', about : aboutCompany }; // Attaquer la base de données
 		return company;
+	}
+
+	componentDidMount()
+	{
+		LoadScript('js/news.js', (err, script) =>{
+			console.log(script);
+		});
 	}
 
 	render(){
@@ -284,6 +287,7 @@ export default class Dashboard extends React.Component{
 				<div className="row">
 					<div className="col-md-12">
 						<NewsPanel news={latestNews} className='panel-danger' title='Latest'/>		 
+						{/*<NewsPanel news={symbolNews} className='panel-info' title={this.company.name}/>	*/}
 					</div>
 				</div>
 
@@ -294,11 +298,7 @@ export default class Dashboard extends React.Component{
 				</div>
 
 				<div className="row">
-					<div className="col-md-6">
-						<NewsPanel news={symbolNews} className='panel-info' title={this.company.name}/>	 
-					</div>
-
-					<div className="col-md-6">
+					<div className="col-md-12">
 						<AboutCompany company={this.company.name} about={this.company.about} />
 					</div>
 				</div>

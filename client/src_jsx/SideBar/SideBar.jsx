@@ -38,7 +38,7 @@ export default class SideBar extends React.Component{
 					<div className="clear"></div>
 				</div>
 				<div className="divider"></div>
-				<SearchCompanyPanel symbols={this.props.symbols} />
+				<SearchCompanyPanel symbols={this.props.symbols} onChangeSymbol={this.props.onChangeSymbol} selectedSymbol={this.props.selectedSymbol} />
 				<ul className="nav menu">
 					{buttons}
 				</ul>
@@ -52,4 +52,6 @@ SideBar.propTypes = {
 	name : PropTypes.string.isRequired,
 	symbols : PropTypes.array.isRequired,
 	onChangeLocation : PropTypes.func.isRequired,
+	onChangeSymbol : PropTypes.func.isRequired,
+	selectedSymbol : PropTypes.string.isRequired,
 };

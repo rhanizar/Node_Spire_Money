@@ -3,3 +3,4 @@
 !! -> Spécifier les modules à compiler par webpack => vendor
 !!->shouldComponentUpdate => Optimizing performance
 I) Lors de clique sur chaque point, on va afficher un panneau qui contient tous les news liées à ce point
+-> Dashboard ajouter un tableau de news comme variable temporaire.

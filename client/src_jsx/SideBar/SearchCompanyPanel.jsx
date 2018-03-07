@@ -1,15 +1,56 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
+import {Typeahead} from 'react-bootstrap-typeahead';
+
+const nasdaqSymbol = 'IXIC'; // Indice de NASDAQ
 
 export default class SearchCompanyPanel extends React.Component{
-	render(){
-		let keyValArr = this.props.symbols;
-		let options = [], alpha;
+	constructor(props)
+	{
+		super(props);
+		//console.log("constructor SearchCompanyPanel");
+		this.state = { selectedSymbol : this.props.selectedSymbol};
+		this.handleSelectChange = this.handleSelectChange.bind(this);
+		this.handleTypeAhead = this.handleTypeAhead.bind(this);
+	}
+
+	init()
+	{
 		
+	}
+
+	handleTypeAhead(selected){
+		if (selected[0])
+			this.props.onChangeSymbol(selected[0].symbol);
+	}
+
+	handleSelectChange(event)
+	{
+		event.preventDefault();
+		this.props.onChangeSymbol(event.target.value);
+	}
+
+	render(){
+		console.log("----------------------------");
+		console.log("render SearchCompanyPanel");
+		console.log("----------------------------");
+
+		let keyValArr = this.props.symbols;
+		let options = [];
+		let elements = [];
+
+		let alpha;
 		for (alpha in keyValArr){
-			let optionsArray = keyValArr[alpha].map(
-				(element) => (<option value={element.symbol} key={element.symbol}>{element.symbol}</option>) 
+			const optionsArray = [];
+			keyValArr[alpha].forEach(
+				(element) => {
+					elements.push({
+						symbol : element.symbol,
+						label : element.company
+					});
+					optionsArray.push(<option value={element.symbol} key={element.symbol}>{element.symbol}</option>);
+				}
 			);
 
 			options.push(
@@ -19,16 +60,18 @@ export default class SearchCompanyPanel extends React.Component{
 			);
 		}
 
+		const type = (<Typeahead onChange={this.handleTypeAhead} options={elements} />);
 		return (
 			<form role="search">
 				<div className="form-group">
 					<label className="center">Search a company</label>
-					<input type="text" className="form-control" placeholder="Name of company" />
+					{type}
 				</div>
 
 				<div className="form-group">
 					<label className="center">Select a symbol</label>
-					<select className="form-control">
+					<select className="form-control" onChange={this.handleSelectChange} 
+						value={this.props.selectedSymbol}>
 						{options}
 					</select>
 				</div>
@@ -38,5 +81,7 @@ export default class SearchCompanyPanel extends React.Component{
 }
 
 SearchCompanyPanel.propTypes = {
-	symbols : PropTypes.array.isRequired
+	symbols : PropTypes.array.isRequired,
+	onChangeSymbol : PropTypes.func.isRequired,
+	selectedSymbol : PropTypes.string.isRequired,
 };

@@ -1,39 +1,44 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
+import LoadScript  from 'load-script';
+
+const NewsItem = (props) => {
+			return (
+				<div className={props.className}>
+	               <li>
+		               	<span>{props.news.substr(0, 44)} ...  <a href={props.url}>Read more</a>
+		               	</span>
+	               	</li>
+	            </div>);
+		}
 
 export default class NewsPanel extends React.Component {
+	constructor(props)
+	{
+		super(props);
+		this.content = null;
+	}
 	render(){
-		const NewsItem = (props) => {
-			return (<li className="news-item">
-				{props.news.substr(0, 44)} ...<a href={props.url}>Read more</a>
-			</li>);
-		}
+		let className;
 		let i = 0;
-		const content = this.props.news.map((newsElement) => {
+		this.content = this.props.news.map((newsElement) => {
+			className = 'ticker-active';
+			if (i > 0)
+				className = 'not-active';
 			i++;
-			return (<NewsItem news={newsElement.title} url={newsElement.url} key={i}/>);
+			return (<NewsItem className={className} news={newsElement.title} url={newsElement.url} key={i}/>);
 		});
+		return (<div className="ticker-container">
+					<div className="ticker-caption">
+			            <p>{this.props.title} news</p>
+			        </div>
 
-		return (
-			<div className={`panel ${this.props.className}`}>
-				<div className="panel-heading">
-				  {this.props.title} news
+			        <ul>
+						{this.content}
+					</ul>
 				</div>
 
-				<div className="panel-body">
-					<div className="row">
-						<div className="col-xs-12">
-						<ul className="news-demo-down-auto">
-							{content}
-						</ul>
-						 
-						</div>
-					 
-					</div>
-				</div>
-				<div className="panel-footer"></div>
-			</div>
 		);
 	}
 }

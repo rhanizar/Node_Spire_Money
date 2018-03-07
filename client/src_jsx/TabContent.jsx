@@ -8,13 +8,11 @@ import LivePanel from './Live/LivePanel';
 import MapPanel from './Map/MapPanel';
 import AccountPanel from './MyAccount/AccountPanel';
 
-const selectedSymbol = 'MSFT';
-
 export default class TabContent extends React.Component {
 	render(){
 		let content;
 		switch(this.props.activeItem){
-			case 'dashboard' : content = (<Dashboard symbol={selectedSymbol} />); break;
+			case 'dashboard' : content = (<Dashboard symbol={this.props.selectedSymbol} />); break;
 			case 'companies' : content = (<SymbolsPanel symbols={this.props.symbols} />); break;
 			case 'live'      : content = (<LivePanel />); break;
 			case 'map'       : content = (<MapPanel />); break;
@@ -34,4 +32,5 @@ TabContent.propTypes = {
 	symbols : PropTypes.array.isRequired,
 	user : PropTypes.object.isRequired,
 	activeItem : PropTypes.string.isRequired,
+	selectedSymbol : PropTypes.string.isRequired,
 };
