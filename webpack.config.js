@@ -1,9 +1,12 @@
 const path = require('path');
-const SERVER_URL = 'http://localhost:3000';
+const SERVER_URL = 'http://localhost';
+const SERVER_PORT = process.env.PORT || 3000;
+const SOCKET_PORT = SERVER_PORT+1;
 const EXTENSIONS = ['*', '.js', '.jsx'];
 const CLIENT_DIR = `${__dirname}/client/`;
 const CONTENT_BASE = `${CLIENT_DIR}/static_content/`;
 const OUTPUT_PATH = `${CLIENT_DIR}/dist_jsx`;
+const webpack = require('webpack');
 
 const appScript = `${CLIENT_DIR}/src_jsx/App.jsx`;
 
@@ -34,9 +37,8 @@ module.exports = {
   devServer: {
     contentBase: CONTENT_BASE,
     proxy: {
-      '/api/*': {
-        target: SERVER_URL
-      },
+      '/api/*': { target: `${SERVER_URL}:${SERVER_PORT}`},
+      '/socket': { target: `${SERVER_URL}:${SOCKET_PORT}`, ws : true },
     },
     before(app){
       app.get('/', function(req, res) {
@@ -53,5 +55,8 @@ module.exports = {
         res.redirect('/');
       });
     }
-  }
+  },
+  plugins : [
+    new webpack.HotModuleReplacementPlugin(),
+  ],
 };

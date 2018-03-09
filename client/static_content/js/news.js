@@ -3,7 +3,6 @@ var speed = 4000;
 canTick = true;
 
 $('.ticker-container ul div').each(function(i) {
-    console.log("HELLO : "+i);
     if ($(window).width() >= 500) {
         $(this).find('li').width($(window).width() - parseInt($(this).css('left')));
     }
@@ -43,7 +42,6 @@ $(window).resize(function() {
 });
 
 function startTicker() {
-    console.log('Here');
     setInterval(function() {
         if (canTick) {
             $('.ticker-container ul div.ticker-active')
@@ -86,7 +84,6 @@ function startTicker() {
 }
 
 function animateTickerElementHorz() {
-    console.log('Here 2');
     if ($(window).width() < 500) {
         if ($('.ticker-container ul div.ticker-active li').width() > $(window).width()) {
             setTimeout(function() {

@@ -65,8 +65,6 @@ export default class Dashboard extends React.Component{
 		fetch(this.routes.quoteDataPerDay, { method: 'GET' }).then(response => {
           if (response.ok) {
             response.json().then(data => {
-            	console.log("Data : ");
-            	console.log(data);
              	this.quoteData = data.quoteData;
             });
           }
@@ -151,9 +149,7 @@ export default class Dashboard extends React.Component{
 
 	componentDidMount()
 	{
-		LoadScript('js/news.js', (err, script) =>{
-			console.log(script);
-		});
+		LoadScript('js/news.js');
 	}
 
 	componentDidUpdate(prevProps, prevState){

@@ -36,12 +36,14 @@ class App extends React.Component{
   fetchSymbols()
   {
       fetch(this.routes.symbols, { method: 'GET' }).then(response => {
+          console.log(response);
           if (response.ok) {
             response.json().then(data => {
               this.symbols = data.symbols;
               this.forceUpdate();
             });
-          }
+          }else
+            window.location.href = '/';
         }).catch(err => {
             console.log("Error in sending data to server: " + err.message);
         });
@@ -65,7 +67,6 @@ class App extends React.Component{
 
   handleChangeSymbol(symbol)
   {
-    console.log("Hello from the App : "+symbol);
     if (symbol){
       this.setState({activeItem : this.state.activeItem, selectedSymbol : symbol});
     }

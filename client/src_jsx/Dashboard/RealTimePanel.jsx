@@ -3,11 +3,15 @@ import ReactDOM from 'react-dom';
 import LoadScript  from 'load-script';
 import PropTypes from 'prop-types';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import socketClient from 'socket.io-client';
 
 const OPEN_COLOR = "#4baffe";
 const HIGH_COLOR = "#3d9400";
 const LOW_COLOR = "#ff0000";
 const CLOSE_COLOR = "#ffc20f";
+const NEW_QUOTE_EVENT = 'NEW_QUOTE_EVENT';
+const JOIN_MSG = 'JOIN_MSG';
+const LEAVE_MSG = 'LEAVE_MSG';
 
 /*{
 	quote : {
@@ -32,6 +36,18 @@ export default class RealTimePanel extends React.Component {
 			obj.time = this.formatTime(element.time);
 			return obj;
 		});
+
+		const symbol = this.props.symbol;
+		this.socket = socketClient.connect(`${window.location.host}`,
+			 { reconnect: true });
+		
+		this.socket.on('connect', () => {
+			this.socket.emit(JOIN_MSG, symbol);
+		});
+
+		this.socket.on(NEW_QUOTE_EVENT, function(msg){
+		    console.log(`New quote for ${symbol} :  ${msg}`);
+		});
 	}
 
 	formatTime(time)
@@ -42,10 +58,18 @@ export default class RealTimePanel extends React.Component {
 	}
 
 	handleClick(e) {
-	  console.log(e);
-	  let url = e.activePayload[0].payload.news.url;
-	  
-	  window.open(url,'_blank');
+	  let news = e.activePayload[0].payload.news;
+	  if (news != null)
+	  	window.open(news,'_blank');
+	}
+
+	componentDidUpdate(prevProps, prevState)
+	{
+		if ( prevProps && (prevProps.symbol != this.props.symbol) )
+		{
+			this.socket.emit(LEAVE_MSG, prevProps.symbol);
+			this.socket.emit(JOIN_MSG, this.props.symbol);
+		}
 	}
 
 	render(){

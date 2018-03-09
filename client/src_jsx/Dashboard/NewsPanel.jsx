@@ -19,6 +19,7 @@ export default class NewsPanel extends React.Component {
 		super(props);
 		this.content = null;
 	}
+	
 	render(){
 		let className;
 		let i = 0;
