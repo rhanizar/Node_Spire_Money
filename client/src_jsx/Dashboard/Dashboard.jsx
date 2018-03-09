@@ -7,214 +7,110 @@ import AboutCompany from './AboutCompany';
 import TabContentHeader from '../TabContentHeader';
 import PropTypes from 'prop-types';
 import LoadScript  from 'load-script';
+import 'whatwg-fetch';
+
 
 const MAX_DATA_AMOUNT = 30;
-const OPEN_COLOR = "rgb(75, 175, 254)";
-const HIGH_COLOR = "rgb(61, 148, 0)";
-const LOW_COLOR = "rgb(255, 0, 0)";
-const CLOSE_COLOR = "rgb(255, 194, 15)";
-
-/**** To retreive from Mongo DB ***/
-const states = [
-	{ symbol : 'MSFT', volume : 2023210, price : 171.6520, difference : -1.59 },
-	{ symbol : 'AAPL', volume : 2023210, price : 171.6520, difference : 0.59 },
-	{ symbol : 'MSFT', volume : 20232665656, price : 171.6520, difference : -1.59 },
-	{ symbol : 'MSFT', volume : 2023210, price : 171.6520, difference : 2.59 },
-];
-
-const latestNews = [
-	{ title : 'News 1', url : '#'},
-	{ title : 'News 2', url : '#'},
-	{ title : 'News 3', url : '#'},
-	{ title : 'News 4', url : '#'},
-	{ title : 'News 5', url : '#'},
-];
-
-const symbolNews = [
-	{ title : 'Company News 1', url : '#'},
-	{ title : 'Company News 2', url : '#'},
-	{ title : 'Company News 3', url : '#'},
-	{ title : 'Company News 4', url : '#'},
-	{ title : 'Company News 5', url : '#'},
-];
-
-const news={
-		url : 'https://www.forbes.com/sites/joannmuller/2018/02/16/tesla-thinks-it-will-school-toyota-on-lean-manufacturing-fixing-model-3-launch-would-be-a-start',
-		title : 'Musk Thinks Tesla Will School Toyota On Lean Manufacturing; Fixing Model 3 Launch Would Be A Start'
-	};
-
-const now = new Date();
-const now2 = new Date();
-const now3 = new Date();
-
-now2.setMinutes(now.getMinutes() + 1);
-now3.setMinutes(now2.getMinutes() + 1);
-
-const data = [
-	{
-		quote : {
-			open : 100,
-			high : 123,
-			low : 90,
-			close : 110,
-		},
-		news : news,
-		time : now
-	},
-	{
-		quote : {
-			open : 111,
-			high : 134,
-			low : 101,
-			close : 120,
-		},
-		news : news,
-		time : now2
-	},
-	{
-		quote : {
-			open : 40,
-			high : 60,
-			low : 33,
-			close : 50,
-		},
-		news : news,
-		time : now3
-	}
-];
-/**** To retreive from Mongo DB ***/
 
 export default class Dashboard extends React.Component{
 	constructor(props){
 		super(props);
-		this.company = this.companyFromSymbol(this.props.symbol);
-		this.chart = null;
+
+		this.states = null;
+		this.latestNews = null;
 		this.open  = [];
 		this.high  = [];
 		this.low   = [];
 		this.close = [];
 
-		this.format = this.format.bind(this);
-		this.toggleDataSeries = this.toggleDataSeries.bind(this);
-		this.onclick = this.onclick.bind(this);
-		this.containerId = "chartContainer";
+		this.routes =  {
+	      companyInfo : '/api/company_info',
+	      quoteDataPerDay : '/api/quote_data_last_day',
+	      companiesStates : '/api/companies_states',
+	      latestNews : '/api/latest_news'
+	    };
 
-		LoadScript('js/canvasjs.min.js',(err, script) => {
-			this.chart = new CanvasJS.Chart(this.containerId, {
-				zoomEnabled: true,
-				axisY:{
-					suffix: " USD",
-					includeZero: false
-				},
-				axisX:{
-					valueFormatString: "HH:mm"
-				},
-				toolTip: {
-					shared: true,
-					content : this.format
-				},
-				legend: {
-					cursor:"pointer",
-					verticalAlign: "top",
-					fontSize: 22,
-					fontColor: "dimGrey",
-					itemclick : this.toggleDataSeries
-				},
-				data: [
-					{ 
-						type: "line",
-						xValueType: "dateTime",
-						yValueFormatString: "$####.00",
-						xValueFormatString: "HH:mm",
-						showInLegend: true,
-						name: "Open",
-						lineColor : OPEN_COLOR,
-						dataPoints: this.open,
-						click : this.onclick
-					},
-					{				
-						type: "line",
-						xValueType: "dateTime",
-						yValueFormatString: "$####.00",
-						xValueFormatString: "HH:mm",
-						showInLegend: true,
-						name: "High" ,
-						lineColor : HIGH_COLOR,
-						dataPoints: this.high,
-						click : this.onclick
-					},
-					{				
-						type: "line",
-						xValueType: "dateTime",
-						yValueFormatString: "$####.00",
-						xValueFormatString: "HH:mm",
-						showInLegend: true,
-						name: "Low" ,
-						lineColor : LOW_COLOR,
-						dataPoints: this.low,
-						click : this.onclick
-					},
-					{				
-						type: "line",
-						xValueType: "dateTime",
-						yValueFormatString: "$####.00",
-						xValueFormatString: "HH:mm",
-						showInLegend: true,
-						name: "Close" ,
-						lineColor : CLOSE_COLOR,
-						dataPoints: this.close,
-						click : this.onclick
-
-					}
-				]
-			});
-
-			data.forEach((info) => {
-				this.pushData(info);
-			});
-
-			this.forceUpdate();
-		});
+		this.fetchData();
 	}
 
-	format(e){
-		let newsItem = e.entries[0].dataPoint.news;
-
-		let date = new Date(e.entries[0].dataPoint.x);
-		let hh = date.getUTCHours();
-		let mm = date.getUTCMinutes();
-		let content = `${hh}:${mm} <br/>`;
-
-		let tmp;
-
-		for (let i = 0; i < e.entries.length; i++) {
-			tmp = e.entries[i];
-			content += `<span style='color : ${tmp.dataPoint.color}'>${tmp.dataSeries.name}</span> : ${tmp.dataPoint.y} $`;
-			content += "<br/>";
-		}
-		
-		content += `<a href="#">${newsItem.title.substr(0, 70)}...</a>`;
-		return content;
+	dataIsComplete()
+	{
+		return ( this.company != null && this.quoteData != null &&
+				 this.states != null && this.latestNews != null );
 	}
 
-	toggleDataSeries(e) {
-		if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
-			e.dataSeries.visible = false;
-		}
-		else {
-			e.dataSeries.visible = true;
-		}
-
-		if (this.chart != null)
-			this.chart.render();
+	fetchData()
+	{
+		this.fetchCompanyInfo();
+		this.fetchQuoteDataLastDay();
+		this.fetchCompaniesStates();
+		this.fetchLatestNews();
 	}
 
-	onclick(e){
-		window.open(e.dataPoint.news.url,'_blank');
+	fetchLatestNews()
+	{
+		fetch(this.routes.latestNews, { method: 'GET' }).then(response => {
+          if (response.ok) {
+            response.json().then(data => {
+             	this.latestNews  = data.latestNews;
+             	this.forceUpdate();
+            });
+          }
+        }).catch(err => {
+            console.log("Error in sending data to server: " + err.message);
+        });
+	}
+
+	fetchQuoteDataLastDay(){
+		fetch(this.routes.quoteDataPerDay, { method: 'GET' }).then(response => {
+          if (response.ok) {
+            response.json().then(data => {
+            	console.log("Data : ");
+            	console.log(data);
+             	this.quoteData = data.quoteData;
+            });
+          }
+        }).catch(err => {
+            console.log("Error in sending data to server: " + err.message);
+        });
+	}
+
+	fetchCompaniesStates()
+	{
+		fetch(this.routes.companiesStates, { method: 'GET' }).then(response => {
+          if (response.ok) {
+            response.json().then(data => {
+             	this.states  = data.states;
+             	this.forceUpdate();
+            });
+          }
+        }).catch(err => {
+            console.log("Error in sending data to server: " + err.message);
+        });
+	}
+
+	fetchCompanyInfo()
+	{
+		let params = new URLSearchParams();
+		params.append('symbol', this.props.symbol);
+
+		fetch(`${this.routes.companyInfo}?${params.toString()}`, { method: 'GET' }).then(response => {
+          if (response.ok) {
+            response.json().then(data => {
+              this.company = data.company;
+              this.forceUpdate();
+            });
+          }else{
+          	console.log("Error in sending data to server: ");
+          	console.log(response);
+          }
+        }).catch(err => {
+            console.log("Error in sending data to server: " + err.message);
+        });
 	}
 
 	pushData(info) {
-		if ((info.quote == undefined) || (info.quote == null) || (this.chart == null))
+		if ((typeof(info.quote) == 'undefined') || (info.quote == null))
 			return;
 
 		if (this.open.length === MAX_DATA_AMOUNT){
@@ -251,23 +147,6 @@ export default class Dashboard extends React.Component{
 			news : info.news,
 			color: CLOSE_COLOR
 		});
-
-		// updating legend text with  updated with y Value 
-		this.chart.options.data[0].legendText = " Open " + info.quote.open + " USD";
-		this.chart.options.data[1].legendText = " High " + info.quote.high + " USD"; 
-		this.chart.options.data[2].legendText = " Low " + info.quote.low + " USD"; 
-		this.chart.options.data[3].legendText = " Close " + info.quote.close + " USD";
-
-		this.chart.options.data[0].dataPoints = this.open;
-		this.chart.options.data[1].dataPoints = this.high;
-		this.chart.options.data[2].dataPoints = this.low;
-		this.chart.options.data[3].dataPoints = this.close;
-	}
-
-	companyFromSymbol(symbol){
-		const aboutCompany = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ut ante in sapien blandit luctus sed ut lacus. Phasellus urna est, faucibus nec ultrices placerat, feugiat et ligula. Donec vestibulum magna a dui pharetra molestie. Fusce et dui urna.';
-		const company = { name : 'Microsoft', about : aboutCompany }; // Attaquer la base de données
-		return company;
 	}
 
 	componentDidMount()
@@ -277,23 +156,33 @@ export default class Dashboard extends React.Component{
 		});
 	}
 
+	componentDidUpdate(prevProps, prevState){
+		if (prevProps != null && prevProps.symbol != this.props.symbol)
+			this.fetchData();
+	}
+	
+
 	render(){
+
+		if (this.dataIsComplete() == false)
+			return null;
+
 		return (
 			<div>
 				<TabContentHeader title="Dashboard" />
 
-				<CompaniesPanel companies={states}/>
+				<CompaniesPanel companies={this.states}/>
 
 				<div className="row">
 					<div className="col-md-12">
-						<NewsPanel news={latestNews} className='panel-danger' title='Latest'/>		 
+						<NewsPanel news={this.latestNews} className='panel-danger' title='Latest'/>		 
 						{/*<NewsPanel news={symbolNews} className='panel-info' title={this.company.name}/>	*/}
 					</div>
 				</div>
 
 				<div className="row">
 					<div className="col-md-12">
-						<RealTimePanel symbol={this.props.symbol} containerId={this.containerId} chart={this.chart} />
+						<RealTimePanel symbol={this.props.symbol} data={this.quoteData} />
 					</div>
 				</div>
 

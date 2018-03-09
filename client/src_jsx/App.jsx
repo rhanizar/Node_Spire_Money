@@ -6,46 +6,61 @@ import TabContent from './TabContent';
 import 'whatwg-fetch';
 import LoadScript  from 'load-script';
 
-/* Move to the login page */
-localStorage.setItem('user');
-const user = {name : 'Account name', email : 'email@email.com', username : 'user_2016'};
-/* Move to the login page */
-
+/* Move to the login page and signup page */
+const userConsistent = { 'x-auth' : '1233333'};
+localStorage.setItem('user', userConsistent);
+/* Move to the login page and signup page */
 
 const appContainerID = 'app';
+
 const nasdaqSymbol = 'IXIC'; // Indice de NASDAQ
 
 class App extends React.Component{
   constructor(props) {
     super(props);
+
     this.handleChangeLocation = this.handleChangeLocation.bind(this);
     this.state = {activeItem : 'dashboard', selectedSymbol : nasdaqSymbol};
     this.handleChangeSymbol = this.handleChangeSymbol.bind(this);
     this.symbols = null;
+    this.user = null;
+    this.routes =  {
+      symbols : '/api/symbols',
+      userInfo : '/api/user_info'
+    };
+
     this.fetchSymbols();
     this.fetchUser();
   }
 
   fetchSymbols()
   {
-      fetch('/api/symbols', { method: 'GET' }).then(response => {
+      fetch(this.routes.symbols, { method: 'GET' }).then(response => {
           if (response.ok) {
             response.json().then(data => {
-              console.log(`Data :`);
-              console.log(data);
               this.symbols = data.symbols;
               this.forceUpdate();
             });
           }
         }).catch(err => {
-          console.log("Error in sending data to server: " + err.message);
+            console.log("Error in sending data to server: " + err.message);
         });
   }
 
   fetchUser(){
-    let user = localStorage.getItem('user');
-    if(user)
-      this.user = user;
+    let userFromStorage = localStorage.getItem('user');
+    if(userFromStorage)
+      fetch(this.routes.userInfo, { method: 'GET' }).then(response => {
+          if (response.ok) {
+            response.json().then(data => {
+              this.user = data.user;
+              this.forceUpdate();
+            });
+          }
+        }).catch(err => {
+            console.log("Error in sending data to server: " + err.message);
+        });
+      
   }
 
   handleChangeSymbol(symbol)
@@ -53,23 +68,27 @@ class App extends React.Component{
     console.log("Hello from the App : "+symbol);
     if (symbol){
       this.setState({activeItem : this.state.activeItem, selectedSymbol : symbol});
-      console.log("this.state.activeItem : "+this.state.activeItem);
-      //this.handleChangeLocation(this.state.activeItem);
     }
-    
   }
 
   handleChangeLocation(newActiveItem){
-    console.log("Hello from the App 2 : "+newActiveItem);
-    this.setState({activeItem : newActiveItem, selectedSymbol : this.state.selectedSymbol});
+    if (newActiveItem)
+     this.setState({activeItem : newActiveItem, selectedSymbol : this.state.selectedSymbol});
     
   }
 
+  dataIsComplete()
+  {
+    return (this.symbols != null && this.user != null);
+  }
+
   render(){
-    if (this.symbols == null) return null;
+    if (this.dataIsComplete() == false)
+      return null;
+
+    let keyValArr =[];
 
     this.symbols.sort((obj1, obj2) =>  obj1.symbol.localeCompare(obj2.symbol));
-    let keyValArr =[];
     this.symbols.forEach((element) => {
       let init = element.symbol.charAt(0).toUpperCase();
 
@@ -82,11 +101,11 @@ class App extends React.Component{
     return (
       <div>
         <NavBar />
-        <SideBar onChangeLocation={this.handleChangeLocation} name={user.name}
+        <SideBar onChangeLocation={this.handleChangeLocation} name={this.user.name}
           symbols={keyValArr} activeItem={this.state.activeItem} onChangeSymbol={this.handleChangeSymbol} 
           selectedSymbol={this.state.selectedSymbol} />
 
-        <TabContent symbols={keyValArr} user={user} activeItem={this.state.activeItem} 
+        <TabContent symbols={keyValArr} user={this.user} activeItem={this.state.activeItem} 
           selectedSymbol={this.state.selectedSymbol}/>
       </div>
     );

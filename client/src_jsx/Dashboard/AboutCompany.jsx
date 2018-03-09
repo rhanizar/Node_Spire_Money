@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
+
 export default class AboutCompany extends React.Component {
 	render(){
 		const company = this.props.company;
