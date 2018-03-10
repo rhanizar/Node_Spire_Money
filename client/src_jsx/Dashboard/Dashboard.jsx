@@ -7,10 +7,14 @@ import AboutCompany from './AboutCompany';
 import TabContentHeader from '../TabContentHeader';
 import PropTypes from 'prop-types';
 import LoadScript  from 'load-script';
+import socketClient from 'socket.io-client';
 import 'whatwg-fetch';
 
 
 const MAX_DATA_AMOUNT = 30;
+const JOIN_MSG = 'JOIN_MSG';
+const LEAVE_MSG = 'LEAVE_MSG';
+
 
 export default class Dashboard extends React.Component{
 	constructor(props){
@@ -29,6 +33,13 @@ export default class Dashboard extends React.Component{
 	      companiesStates : '/api/companies_states',
 	      latestNews : '/api/latest_news'
 	    };
+
+	    this.socket = socketClient.connect(`${window.location.host}`,
+			 { reconnect: true });
+
+	    this.socket.on('connect', () => {
+			this.socket.emit(JOIN_MSG, this.props.symbol);
+		});
 
 		this.fetchData();
 	}
@@ -107,7 +118,7 @@ export default class Dashboard extends React.Component{
         });
 	}
 
-	pushData(info) {
+	/*pushData(info) {
 		if ((typeof(info.quote) == 'undefined') || (info.quote == null))
 			return;
 
@@ -145,7 +156,7 @@ export default class Dashboard extends React.Component{
 			news : info.news,
 			color: CLOSE_COLOR
 		});
-	}
+	}*/
 
 	componentDidMount()
 	{
@@ -153,10 +164,12 @@ export default class Dashboard extends React.Component{
 	}
 
 	componentDidUpdate(prevProps, prevState){
-		if (prevProps != null && prevProps.symbol != this.props.symbol)
+		if (prevProps != null && prevProps.symbol != this.props.symbol){
 			this.fetchData();
+			this.socket.emit(LEAVE_MSG, prevProps.symbol);
+			this.socket.emit(JOIN_MSG, this.props.symbol);
+		}
 	}
-	
 
 	render(){
 
@@ -167,18 +180,19 @@ export default class Dashboard extends React.Component{
 			<div>
 				<TabContentHeader title="Dashboard" />
 
-				<CompaniesPanel companies={this.states}/>
+				<CompaniesPanel companies={this.states} socket={this.socket}/>
 
 				<div className="row">
 					<div className="col-md-12">
-						<NewsPanel news={this.latestNews} className='panel-danger' title='Latest'/>		 
+						<NewsPanel news={this.latestNews} className='panel-danger' title='Latest'
+							socket={this.socket}/>		 
 						{/*<NewsPanel news={symbolNews} className='panel-info' title={this.company.name}/>	*/}
 					</div>
 				</div>
 
 				<div className="row">
 					<div className="col-md-12">
-						<RealTimePanel symbol={this.props.symbol} data={this.quoteData} />
+						<RealTimePanel symbol={this.props.symbol} data={this.quoteData} socket={this.socket}/>
 					</div>
 				</div>
 

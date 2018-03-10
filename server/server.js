@@ -14,10 +14,10 @@
 	  {symbol : "IXIC",  company : "Nasdaq"}
 	];
 
-	const news =  {
+	const news =  [{
 		url : 'https://www.forbes.com/sites/joannmuller/2018/02/16/tesla-thinks-it-will-school-toyota-on-lean-manufacturing-fixing-model-3-launch-would-be-a-start',
 		title : 'Musk Thinks Tesla Will School Toyota On Lean Manufacturing; Fixing Model 3 Launch Would Be A Start'
-	};
+	}];
 
 	const states = {
 		MSFT : { volume : 2023210, price : 171.6520, difference : -1.59 },
@@ -69,9 +69,6 @@
 	const latestNews = [
 		{ title : 'News 1', url : '#'},
 		{ title : 'News 2', url : '#'},
-		{ title : 'News 3', url : '#'},
-		{ title : 'News 4', url : '#'},
-		{ title : 'News 5', url : '#'},
 	];
 //---------------------
 
@@ -163,8 +160,13 @@ const onMsgKafka = function (message) {
     	//const formattedMessage = formatKafkaMsg(msg);
     	const formattedMessage = msg.data;
     	ServerHistoryKeeper.newDataFromConsumer(msg.symbol, formattedMessage);
-    	realTimeMiddleware.sendNews(formattedMessage.news); // Broadcast
-    	realTimeMiddleware.sendQuote(msg.symbol, formattedMessage.quote); //Multicast
+    	if (formattedMessage.news.length > 0)
+    		realTimeMiddleware.sendNews(formattedMessage.news); // Broadcast
+    	
+    	if (formattedMessage.quote.open){
+    		realTimeMiddleware.sendQuote(msg.symbol, formattedMessage); // Multicast
+    		realTimeMiddleware.sendStates(msg.symbol, ServerHistoryKeeper.fetchStates()); // Broadcast
+    	}
 };
 
 const onErrorKafka = function (err) {

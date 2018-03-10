@@ -78,7 +78,7 @@ class ServerHistoryKeeper
 			if (toRemove > 0)
 				NewsHistory = NewsHistory.slice(toRemove);
 
-			NewsHistory.concat(data.news);
+			NewsHistory = NewsHistory.concat(data.news);
 		}
 	}
 

@@ -3,9 +3,33 @@ import ReactDOM from 'react-dom';
 import CompanyState from './CompanyState';
 import PropTypes from 'prop-types';
 
+const NEW_STATES_EVENT = 'NEW_STATES_EVENT';
+
 export default class CompaniesPanel extends React.Component {
+	constructor(props)
+	{
+		super(props);
+
+		this.companies = this.props.companies;
+
+		let me = this;
+
+		this.newStateEventHandler = this.newStateEventHandler.bind(this);
+		
+		this.props.socket.on(NEW_STATES_EVENT, function(msg){
+		    me.newStateEventHandler(msg);
+		});
+	}
+
+	newStateEventHandler(msg)
+	{
+		console.log('Hello from the newStateEventHandler handler !!');
+		console.log(msg);
+		console.log('End of message');
+	}
+
 	render(){
-		const companies = this.props.companies;
+		const companies = this.companies;
 		let i = 0;
 		const content = [];
 		for (let symbol in companies)
@@ -33,4 +57,5 @@ export default class CompaniesPanel extends React.Component {
 
 CompaniesPanel.propTypes = {
 	companies : PropTypes.object.isRequired,
+	socket : PropTypes.object.isRequired,
 };

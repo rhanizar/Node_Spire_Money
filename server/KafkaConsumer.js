@@ -24,7 +24,7 @@ const staticData =
     data : {
         quote : { open : 9, high : 10, low : 11, close : 12 },
         news : [{ url : 'url 3', title : 'title 3', "description": "desc 3"}],
-        time : '2018-02-27 16:03:00'
+        time : '2018-02-27 16:02:00'
     },
 },
 {
@@ -32,7 +32,7 @@ const staticData =
     data : {
         quote : { open :   13, high : 14, low : 15, close : 16 },
         news : [{ url : 'url 4', title : 'title 4', "description": "desc 4"}],
-        time : '2018-02-27 16:04:00'
+        time : '2018-02-27 16:03:00'
     },
 }
 ]

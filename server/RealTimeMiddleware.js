@@ -6,6 +6,7 @@ var io = require('socket.io')(http);*/
 
 const NEW_QUOTE_EVENT = 'NEW_QUOTE_EVENT';
 const NEW_NEWS_EVENT = 'NEW_NEWS_EVENT';
+const NEW_STATES_EVENT = 'NEW_STATES_EVENT';
 const JOIN_MSG = 'JOIN_MSG';
 const LEAVE_MSG = 'LEAVE_MSG';
 
@@ -39,6 +40,11 @@ class RealTimeMiddleware
 		//this.io.sockets.in(room).emit(NEW_QUOTE_EVENT, `${quote} - Hello ${symbol}`);
 		//this.io.to(symbol).emit(NEW_QUOTE_EVENT, `${quote} - Hello ${symbol}`);
 		this.io.to(symbol).emit(NEW_QUOTE_EVENT, quote);
+	}
+
+	sendStates(states)
+	{
+		this.io.emit(NEW_STATES_EVENT, states);	
 	}
 }
 
