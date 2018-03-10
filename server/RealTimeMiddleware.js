@@ -37,7 +37,8 @@ class RealTimeMiddleware
 	sendQuote(symbol, quote)
 	{
 		//this.io.sockets.in(room).emit(NEW_QUOTE_EVENT, `${quote} - Hello ${symbol}`);
-		this.io.to(symbol).emit(NEW_QUOTE_EVENT, `${quote} - Hello ${symbol}`);
+		//this.io.to(symbol).emit(NEW_QUOTE_EVENT, `${quote} - Hello ${symbol}`);
+		this.io.to(symbol).emit(NEW_QUOTE_EVENT, quote);
 	}
 }
 

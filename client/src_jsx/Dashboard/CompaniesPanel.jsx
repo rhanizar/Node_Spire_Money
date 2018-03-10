@@ -7,11 +7,19 @@ export default class CompaniesPanel extends React.Component {
 	render(){
 		const companies = this.props.companies;
 		let i = 0;
-		const content = companies.map((company) => {
+		const content = [];
+		for (let symbol in companies)
+		{
+			const company = companies[symbol];
+			content[i] = (<CompanyState  symbol={symbol} volume={company.volume}
+					 price={company.price} difference={company.difference} key={i} />);
+			i++;
+		}
+/*		const content = companies.map((company) => {
 			i++;
 			return (<CompanyState  symbol={company.symbol} volume={company.volume}
 					 price={company.price} difference={company.difference} key={i}/>);
-		});
+		});*/
 
 		return (
 			<div className="panel panel-container">
@@ -24,5 +32,5 @@ export default class CompaniesPanel extends React.Component {
 }
 
 CompaniesPanel.propTypes = {
-	companies : PropTypes.array.isRequired,
+	companies : PropTypes.object.isRequired,
 };

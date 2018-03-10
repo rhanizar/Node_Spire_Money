@@ -10,6 +10,7 @@ const HIGH_COLOR = "#3d9400";
 const LOW_COLOR = "#ff0000";
 const CLOSE_COLOR = "#ffc20f";
 const NEW_QUOTE_EVENT = 'NEW_QUOTE_EVENT';
+const NEW_NEWS_EVENT = 'NEW_NEWS_EVENT';
 const JOIN_MSG = 'JOIN_MSG';
 const LEAVE_MSG = 'LEAVE_MSG';
 
@@ -46,7 +47,13 @@ export default class RealTimePanel extends React.Component {
 		});
 
 		this.socket.on(NEW_QUOTE_EVENT, function(msg){
-		    console.log(`New quote for ${symbol} :  ${msg}`);
+		    console.log(`New quote for ${symbol} :`);
+		    console.log(msg);
+		});
+
+		this.socket.on(NEW_NEWS_EVENT, function(msg){
+		    console.log(`News arrived : `);
+		    console.log(msg);
 		});
 	}
 
@@ -59,8 +66,8 @@ export default class RealTimePanel extends React.Component {
 
 	handleClick(e) {
 	  let news = e.activePayload[0].payload.news;
-	  if (news != null)
-	  	window.open(news,'_blank');
+	  if (news.length > 0)
+	  	window.open(news[0].url,'_blank');
 	}
 
 	componentDidUpdate(prevProps, prevState)

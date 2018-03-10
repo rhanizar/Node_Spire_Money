@@ -19,12 +19,13 @@
 		title : 'Musk Thinks Tesla Will School Toyota On Lean Manufacturing; Fixing Model 3 Launch Would Be A Start'
 	};
 
-	const states = [
-		{ symbol : 'MSFT', volume : 2023210, price : 171.6520, difference : -1.59 },
-		{ symbol : 'AAPL', volume : 2023210, price : 171.6520, difference : 0.59 },
-		{ symbol : 'MSFT', volume : 20232665656, price : 171.6520, difference : -1.59 },
-		{ symbol : 'MSFT', volume : 2023210, price : 171.6520, difference : 2.59 },
-	];
+	const states = {
+		MSFT : { volume : 2023210, price : 171.6520, difference : -1.59 },
+		AAPL : { volume : 2023210, price : 171.6520, difference : 0.59 },
+		CSCO : { volume : 20232665656, price : 171.6520, difference : -1.59 },
+		IBM : { volume : 2023210, price : 171.6520, difference : 2.59 },
+	}
+
 	const now = new Date();
 	const now2 = new Date();
 	const now3 = new Date();
@@ -74,7 +75,6 @@
 	];
 //---------------------
 
-const 9 = require('./RealTimeMiddleware');
 const express = require('express');
 const sourceMapSupport = require('source-map-support');
 const routes = {
@@ -86,10 +86,29 @@ const routes = {
       	  latestNews : '/api/latest_news'
 };
 
+/*------ Kafka configuration ------------*/
+
+const TOPIC_NAME = 'SpireMoney';
+const ZOOKEEPER_HOST = 'localhost:2181';
+const PARTITION = 0;
+
+/*---------------------------------------*/
+
+/*------------ Import classes -----------------*/
+
+const RealTimeMiddleware = require('./RealTimeMiddleware');
+const KafkaConsumer = require('./KafkaConsumer');
+const ServerHistoryKeeper = require('./ServerHistoryKeeper');
+
+/*---------------------------------------*/
+
+// Initialisation
 let app = express();
 let PORT = process.env.PORT || 3000;
-sourceMapSupport.install();
 
+ServerHistoryKeeper.Init(symbols); // Symbols from MongoDB
+
+sourceMapSupport.install();
 /*
 let CLIENT_DIR = path.resolve(`./client/static_content/`);
 let INDEX_PAGE = `${CLIENT_DIR}/index.html`;
@@ -135,12 +154,45 @@ app.listen(PORT, () => {
 
 const realTimeMiddleware = new RealTimeMiddleware(app, PORT+1);
 
-let i = 0;
+//Kafka consumer manipulation
+const onMsgKafka = function (message) {
+		console.log("message Kafka");
+		console.log(message);
+		const msg = message; // Just for test
+    	//const msg = JSON.parse(message.value);
+    	//const formattedMessage = formatKafkaMsg(msg);
+    	const formattedMessage = msg.data;
+    	ServerHistoryKeeper.newDataFromConsumer(msg.symbol, formattedMessage);
+    	realTimeMiddleware.sendNews(formattedMessage.news); // Broadcast
+    	realTimeMiddleware.sendQuote(msg.symbol, formattedMessage.quote); //Multicast
+};
 
+const onErrorKafka = function (err) {
+   	console.log('Il y a eu une erreur dans le consumer ! ')
+};
+
+function formatKafkaMsg(msg)
+{
+	let result = {
+		time : msg.time
+	}
+
+	if (msg.open)
+		result.quote = { open : msg, high : msg, low : msg, close : msg };
+
+	result.news = msg.news;
+	return result;
+}
+
+const kafkaConsumer = new KafkaConsumer(TOPIC_NAME, ZOOKEEPER_HOST, PARTITION, onMsgKafka, onErrorKafka);
+
+
+//Static test for socket.io
+/*let i = 0;
 symbols.forEach((element) => {
 	setInterval(function(){
 		i++;
 		console.log("Sending for "+element.symbol);
 		realTimeMiddleware.sendQuote(element.symbol, i);
 	}, 1000);
-});
+});*/
