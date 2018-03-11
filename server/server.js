@@ -1,22 +1,22 @@
 //--- static data -----
 	const symbols = [
+
 	  {symbol : "AAPL", company : "Apple"},
-	  {symbol : "AMX",  company : "Amx com"},
-	  {symbol : "AMX 2",  company : "Amx com2"},
-	  {symbol : "AMX 3",  company : "Amx com3"},
-	  {symbol : "AMX 4",  company : "Amx com3"},
+	  {symbol : "GOOG",  company : "Amx com"},
+	  {symbol : "ORCL",  company : "Amx com2"},
+	  {symbol : "INTC",  company : "Amx com3"},
+	  {symbol : "VOD",  company : "Amx com3"},
 	  {symbol : "MSFT", company : "Microsoft"},
-	  {symbol : "CC",   company : "CC Company"},
-	  {symbol : "CC2",  company : "CC2 Company"},
+	  {symbol : "QCOM",   company : "CC Company"},
+	  {symbol : "AMZN",  company : "CC2 Company"},
 	  {symbol : "CSCO", company : "Cisco"},
 	  {symbol : "IBM",  company : "IBM"},
-	  {symbol : "IIS",  company : "IIS Company"},
+	  {symbol : "AMGN",  company : "IIS Company"},
 	  {symbol : "IXIC",  company : "Nasdaq"}
 	];
-
 	const news =  [{
-		url : 'https://www.forbes.com/sites/joannmuller/2018/02/16/tesla-thinks-it-will-school-toyota-on-lean-manufacturing-fixing-model-3-launch-would-be-a-start',
-		title : 'Musk Thinks Tesla Will School Toyota On Lean Manufacturing; Fixing Model 3 Launch Would Be A Start'
+		link : 'https://www.forbes.com/sites/joannmuller/2018/02/16/tesla-thinks-it-will-school-toyota-on-lean-manufacturing-fixing-model-3-launch-would-be-a-start',
+		titre : 'Musk Thinks Tesla Will School Toyota On Lean Manufacturing; Fixing Model 3 Launch Would Be A Start'
 	}];
 
 	const states = {
@@ -34,6 +34,7 @@
 	now3.setMinutes(now2.getMinutes() + 1);
 
 	const data = [
+
 		{
 			quote : {
 				open : 100,
@@ -42,7 +43,7 @@
 				close : 110,
 			},
 			news : news,
-			time : now
+			time : "2018-03-11 09:59:00"
 		},
 		{
 			quote : {
@@ -52,7 +53,7 @@
 				close : 120,
 			},
 			news : news,
-			time : now2
+			time : "2018-03-11 10:00:00"
 		},
 		{
 			quote : {
@@ -62,14 +63,10 @@
 				close : 50,
 			},
 			news : news,
-			time : now3
+			time : "2018-03-11 10:01:00"
 		}
 	];
 
-	const latestNews = [
-		{ title : 'News 1', url : '#'},
-		{ title : 'News 2', url : '#'},
-	];
 //---------------------
 
 const express = require('express');
@@ -133,11 +130,15 @@ app.get(routes.companyInfo, (req, res) => {
 });
 
 app.get(routes.latestNews, (req, res) => {
-	res.send({ latestNews : latestNews });
+	res.send({ latestNews : ServerHistoryKeeper.fetchNews() });
 });
 
 app.get(routes.quoteDataPerDay, (req, res) => {
-	res.send({ quoteData : data });
+	let symbol = req.query.symbol;
+	console.log(routes.quoteDataPerDay+' : Symbol : '+symbol)
+	if (symbol)
+		res.send({ quoteData : ServerHistoryKeeper.fetchQuotes(symbol) });
+		//res.send({ quoteData : data });
 });
 
 app.get(routes.companiesStates, (req, res) => {
@@ -153,36 +154,40 @@ const realTimeMiddleware = new RealTimeMiddleware(app, PORT+1);
 
 //Kafka consumer manipulation
 const onMsgKafka = function (message) {
-		console.log("message Kafka");
-		console.log(message);
-		const msg = message; // Just for test
-    	//const msg = JSON.parse(message.value);
-    	//const formattedMessage = formatKafkaMsg(msg);
-    	const formattedMessage = msg.data;
+		/*console.log("message Kafka :");
+		console.log(message);*/
+		//const msg = message; // Just for test
+    	const msg = JSON.parse(message.value);
+		console.log("message Kafka [parsed] :");
+		console.log(msg);
+    	const formattedMessage = formatKafkaMsg(msg);
+    	//const formattedMessage = msg.data;
     	ServerHistoryKeeper.newDataFromConsumer(msg.symbol, formattedMessage);
     	if (formattedMessage.news.length > 0)
     		realTimeMiddleware.sendNews(formattedMessage.news); // Broadcast
     	
     	if (formattedMessage.quote.open){
+    		console.log("Sending quote : ");
+    		console.log(formattedMessage.quote)
     		realTimeMiddleware.sendQuote(msg.symbol, formattedMessage); // Multicast
     		realTimeMiddleware.sendStates(msg.symbol, ServerHistoryKeeper.fetchStates()); // Broadcast
     	}
 };
 
 const onErrorKafka = function (err) {
-   	console.log('Il y a eu une erreur dans le consumer ! ')
+   	console.log('KafkaConsumer error :');
+   	console.log(err);
 };
 
 function formatKafkaMsg(msg)
 {
-	let result = {
-		time : msg.time
-	}
-
-	if (msg.open)
-		result.quote = { open : msg, high : msg, low : msg, close : msg };
-
-	result.news = msg.news;
+	let result = msg.data;
+	let open = parseFloat( parseFloat(result.quote.open).toFixed(2));
+	let high = parseFloat( parseFloat(result.quote.high).toFixed(2));
+	let low = parseFloat( parseFloat(result.quote.low).toFixed(2));
+	let close = parseFloat( parseFloat(result.quote.close).toFixed(2));
+	let volume = parseFloat( parseFloat(result.quote.volume).toFixed(2));
+	result.quote = { open : open, high : high, low : low, close : close };
 	return result;
 }
 

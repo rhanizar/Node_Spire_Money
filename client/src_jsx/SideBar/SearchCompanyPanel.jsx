@@ -9,7 +9,6 @@ export default class SearchCompanyPanel extends React.Component{
 	constructor(props)
 	{
 		super(props);
-		//console.log("constructor SearchCompanyPanel");
 		this.state = { selectedSymbol : this.props.selectedSymbol};
 		this.handleSelectChange = this.handleSelectChange.bind(this);
 		this.handleTypeAhead = this.handleTypeAhead.bind(this);
@@ -32,10 +31,6 @@ export default class SearchCompanyPanel extends React.Component{
 	}
 
 	render(){
-		console.log("----------------------------");
-		console.log("render SearchCompanyPanel");
-		console.log("----------------------------");
-
 		let keyValArr = this.props.symbols;
 		let options = [];
 		let elements = [];

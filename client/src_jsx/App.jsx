@@ -36,7 +36,6 @@ class App extends React.Component{
   fetchSymbols()
   {
       fetch(this.routes.symbols, { method: 'GET' }).then(response => {
-          console.log(response);
           if (response.ok) {
             response.json().then(data => {
               this.symbols = data.symbols;

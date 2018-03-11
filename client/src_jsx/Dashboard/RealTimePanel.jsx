@@ -29,11 +29,10 @@ export default class RealTimePanel extends React.Component {
 	constructor(props)
 	{
 		super(props);
-		this.dataFormatted = this.props.data.map((element) => {
-			return this.formatQuote(element);
-		});
 
 		let me = this;
+		this.state = this.init(this.props);
+
 		this.newQuoteEventHandler = this.newQuoteEventHandler.bind(this);
 		
 		this.props.socket.on(NEW_QUOTE_EVENT, function(msg){
@@ -49,41 +48,48 @@ export default class RealTimePanel extends React.Component {
 		return obj;
 	}
 
+	componentWillUpdate(nextProps, nextState)
+	{
+		if ( (this.props == null) || (nextProps != null && nextProps.data != this.props.data) ){
+			
+			this.setState(this.init(nextProps));
+		}
+	}
+
+	init(props)
+	{
+		let dataFormatted = props.data.map((element) => {
+			return this.formatQuote(element);
+		});
+		return ({dataFormatted : dataFormatted });
+	}
+
 	newQuoteEventHandler(msg)
 	{
-		if (this.dataFormatted.length == MAX_QUOTES_ITEMS)
-				this.dataFormatted = this.dataFormatted.slice(1);
+		console.log('newQuoteEventHandler : ');
+		console.log(msg);
+		let dataFormatted = this.state.dataFormatted;
+
+		if (dataFormatted.length == MAX_QUOTES_ITEMS)
+				dataFormatted = dataFormatted.slice(1);
 
 		let formatted = this.formatQuote(msg);
-		this.dataFormatted.push(formatted);
-		let array = [];
-		this.dataFormatted = array.concat(this.dataFormatted);
-
-		console.log('Hello from the newQuoteEventHandler handler !!');
-		console.log(msg);
-		console.log('End of message');
-		console.log('++++++++++++++++++++');
-		console.log(formatted);
-		console.log('this.dataFormatted : ');
-		console.log(this.dataFormatted);
-		console.log('++++++++++++++++++++');
-		this.forceUpdate();
+		dataFormatted.push(formatted);
+		let arr = [];
+		this.setState({ dataFormatted : arr.concat(dataFormatted) });
 	}
 
 	formatTime(time)
 	{
 		let date = new Date(time);
 		let content = `${date.getUTCHours()}:${("0"+date.getUTCMinutes()).slice(-2)}`;
-		console.log('content : '+content);
 		return content;
 	}
 
 	handleClick(e) {
 	  let news = e.activePayload[0].payload.news;
-	  console.log("Handle click : ");
-	  console.log(news);
 	  if (news.length > 0)
-	  	window.open(news[0].url,'_blank');
+	  	window.open(news[0].link,'_blank');
 	}
 /*
 	componentDidUpdate(prevProps, prevState)
@@ -96,9 +102,6 @@ export default class RealTimePanel extends React.Component {
 	}*/
 
 	render(){
-		console.log('++++++++++++++++++++');
-		console.log('Rendering');
-		console.log('++++++++++++++++++++');
 		return (
 			<div className="panel panel-default">
 				<div className="panel-heading">
@@ -109,16 +112,16 @@ export default class RealTimePanel extends React.Component {
 					<div className="canvas-wrapper">
 						<div className="main-chart dataSeriesChart">
 							<ResponsiveContainer height='100%' width='100%'>
-								<LineChart onClick={this.handleClick} data={this.dataFormatted}>
+								<LineChart onClick={this.handleClick} data={this.state.dataFormatted} >
 								       <XAxis dataKey="time"/>
 								       <YAxis/>
 								       <CartesianGrid strokeDasharray="3 3"/>
 								       <Tooltip />
 								       <Legend />
-								       <Line type="monotone" dataKey="close" stroke={CLOSE_COLOR} activeDot={{r: 8}}/>
-								       <Line type="monotone" dataKey="high" stroke={HIGH_COLOR} activeDot={{r: 8}}/>
-								       <Line type="monotone" dataKey="low" stroke={LOW_COLOR} activeDot={{r: 8}}/>
-								       <Line type="monotone" dataKey="open" stroke={OPEN_COLOR} activeDot={{r: 8}}/>
+								       <Line type="monotone" dataKey="close" stroke={CLOSE_COLOR} activeDot={{r: 8}} isAnimationActive={true} animationEasing={'linear'} animationDuration={1000}/>
+								       <Line type="monotone" dataKey="high" stroke={HIGH_COLOR} activeDot={{r: 8}} isAnimationActive={true} animationEasing={'linear'} animationDuration={1000}/>
+								       <Line type="monotone" dataKey="low" stroke={LOW_COLOR} activeDot={{r: 8}} isAnimationActive={true} animationEasing={'linear'} animationDuration={1000}/>
+								       <Line type="monotone" dataKey="open" stroke={OPEN_COLOR} activeDot={{r: 8}} isAnimationActive={true} animationEasing={'linear'} animationDuration={1000}/>
 
 							    </LineChart>
 							</ResponsiveContainer>

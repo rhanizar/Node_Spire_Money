@@ -26,8 +26,8 @@
 		- Si (la donnée n'existe pas dans l'historique) alors attaquer le DAO pour le trouver
 */
 
-const MAX_QUOTES_HISTORY_PER_SYMBOL = 30;
-const MAX_NEWS_HISTORY = 30;
+const MAX_QUOTES_HISTORY_PER_SYMBOL = 5;
+const MAX_NEWS_HISTORY = 5;
 let QuoteHistory = null;
 let StatesHistory = null;
 let NewsHistory = [];
@@ -58,13 +58,21 @@ class ServerHistoryKeeper
 	static newDataFromConsumer(symbol, data)
 	{
 		//Adding the quote
-		if (data.quote != null)
+		if (data.quote.open)
 		{
 			let quote = data.quote;
 			if (QuoteHistory[symbol].length == MAX_QUOTES_HISTORY_PER_SYMBOL)
 				QuoteHistory[symbol] = QuoteHistory[symbol].slice(1);
-			QuoteHistory[symbol].push(quote);
+			let obj = {
+				quote : quote,
+				news : data.news,
+				time : data.time
+			};
+			
+			QuoteHistory[symbol].push(obj);
 
+			/*console.log(`QuoteHistory[${symbol}] = `);
+			console.log(QuoteHistory[symbol]);*/
 			//Calculating the state
 			const last = StatesHistory[symbol];
 			const difference = ((quote.close - last.price) / last.price) * 100;
@@ -80,6 +88,7 @@ class ServerHistoryKeeper
 
 			NewsHistory = NewsHistory.concat(data.news);
 		}
+
 	}
 
 
@@ -91,8 +100,8 @@ class ServerHistoryKeeper
 		return StatesHistory;
 	}
 
-	static fetchQuotes(){
-		return QuoteHistory;
+	static fetchQuotes(symbol){
+		return QuoteHistory[symbol];
 	}
 }
 

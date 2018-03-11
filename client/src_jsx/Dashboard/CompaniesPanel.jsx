@@ -23,9 +23,9 @@ export default class CompaniesPanel extends React.Component {
 
 	newStateEventHandler(msg)
 	{
-		console.log('Hello from the newStateEventHandler handler !!');
+		/*console.log('Hello from the newStateEventHandler handler !!');
 		console.log(msg);
-		console.log('End of message');
+		console.log('End of message');*/
 	}
 
 	render(){

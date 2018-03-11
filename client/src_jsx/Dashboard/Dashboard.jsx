@@ -20,12 +20,7 @@ export default class Dashboard extends React.Component{
 	constructor(props){
 		super(props);
 
-		this.states = null;
-		this.latestNews = null;
-		this.open  = [];
-		this.high  = [];
-		this.low   = [];
-		this.close = [];
+		this.init();
 
 		this.routes =  {
 	      companyInfo : '/api/company_info',
@@ -41,7 +36,17 @@ export default class Dashboard extends React.Component{
 			this.socket.emit(JOIN_MSG, this.props.symbol);
 		});
 
-		this.fetchData();
+	    this.fetchLatestNews();
+		this.fetchCompaniesStates();
+		this.fetchData(this.props);
+	}
+
+	init()
+	{
+		this.states = null;
+		this.company = null;
+		this.quoteData = null;
+		this.latestNews = null;
 	}
 
 	dataIsComplete()
@@ -50,12 +55,10 @@ export default class Dashboard extends React.Component{
 				 this.states != null && this.latestNews != null );
 	}
 
-	fetchData()
+	fetchData(props)
 	{
-		this.fetchCompanyInfo();
-		this.fetchQuoteDataLastDay();
-		this.fetchCompaniesStates();
-		this.fetchLatestNews();
+		this.fetchCompanyInfo(props);
+		this.fetchQuoteDataLastDay(props);
 	}
 
 	fetchLatestNews()
@@ -72,11 +75,19 @@ export default class Dashboard extends React.Component{
         });
 	}
 
-	fetchQuoteDataLastDay(){
-		fetch(this.routes.quoteDataPerDay, { method: 'GET' }).then(response => {
+	fetchQuoteDataLastDay(props){
+		let params = new URLSearchParams();
+		params.append('symbol', props.symbol);
+
+		fetch(`${this.routes.quoteDataPerDay}?${params.toString()}`, { method: 'GET' }).then(response => {
           if (response.ok) {
             response.json().then(data => {
              	this.quoteData = data.quoteData;
+             	/*console.log("------------------------------");
+             	console.log(data);
+             	console.log(data.quoteData[0]);
+             	console.log("------------------------------");*/
+             	this.forceUpdate();
             });
           }
         }).catch(err => {
@@ -98,10 +109,10 @@ export default class Dashboard extends React.Component{
         });
 	}
 
-	fetchCompanyInfo()
+	fetchCompanyInfo(props)
 	{
 		let params = new URLSearchParams();
-		params.append('symbol', this.props.symbol);
+		params.append('symbol', props.symbol);
 
 		fetch(`${this.routes.companyInfo}?${params.toString()}`, { method: 'GET' }).then(response => {
           if (response.ok) {
@@ -118,56 +129,19 @@ export default class Dashboard extends React.Component{
         });
 	}
 
-	/*pushData(info) {
-		if ((typeof(info.quote) == 'undefined') || (info.quote == null))
-			return;
-
-		if (this.open.length === MAX_DATA_AMOUNT){
-			this.open = this.open.slice(1);
-			this.high = this.high.slice(1);
-			this.low = this.low.slice(1);
-			this.close = this.close.slice(1);
-		}
-
-		this.open.push({
-			x: info.time,
-			y: info.quote.open,
-			news : info.news,
-			color: OPEN_COLOR
-		});
-
-		this.high.push({
-			x: info.time,
-			y: info.quote.high,
-			news : info.news,
-			color: HIGH_COLOR
-		});
-
-		this.low.push({
-			x: info.time,
-			y: info.quote.low,
-			news : info.news,
-			color: LOW_COLOR
-		});
-
-		this.close.push({
-			x: info.time,
-			y: info.quote.close,
-			news : info.news,
-			color: CLOSE_COLOR
-		});
-	}*/
-
 	componentDidMount()
 	{
 		LoadScript('js/news.js');
 	}
 
-	componentDidUpdate(prevProps, prevState){
-		if (prevProps != null && prevProps.symbol != this.props.symbol){
-			this.fetchData();
-			this.socket.emit(LEAVE_MSG, prevProps.symbol);
-			this.socket.emit(JOIN_MSG, this.props.symbol);
+	componentWillUpdate(nextProps, nextState)
+	{
+		if (nextProps != null && nextProps.symbol != this.props.symbol)
+		{
+			//this.init();
+			this.fetchData(nextProps);
+			this.socket.emit(LEAVE_MSG, this.props.symbol);
+			this.socket.emit(JOIN_MSG, nextProps.symbol);
 		}
 	}
 
@@ -175,7 +149,6 @@ export default class Dashboard extends React.Component{
 
 		if (this.dataIsComplete() == false)
 			return null;
-
 		return (
 			<div>
 				<TabContentHeader title="Dashboard" />

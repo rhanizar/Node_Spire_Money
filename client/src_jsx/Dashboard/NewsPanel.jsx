@@ -10,7 +10,7 @@ const NewsItem = (props) => {
 			return (
 				<div className={props.className}>
 	               <li>
-		               	<span>{props.news.substr(0, 44)} ...  <a href={props.url} target='_blank'>Read more</a>
+		               	<span>{props.news.substr(0, 90)} ...  <a href={props.link} target='_blank'>Read more</a>
 		               	</span>
 	               	</li>
 	            </div>);
@@ -23,10 +23,8 @@ export default class NewsPanel extends React.Component {
 		this.content = null;
 		this.newsArray = this.props.news;
 		this.newsEventHandler = this.newsEventHandler.bind(this);
-		let me = this;
 
-		console.log('0 - this.newsArray : ');
-		console.log(this.newsArray);
+		let me = this;
 
 		this.props.socket.on(NEW_NEWS_EVENT, function(msg){
 		    me.newsEventHandler(msg);
@@ -35,11 +33,14 @@ export default class NewsPanel extends React.Component {
 
 	newsEventHandler(msg)
 	{
-		console.log('1- this.newsArray : ');
+		/*console.log('1- this.newsArray : ');
 		console.log(this.newsArray);
 		console.log('Hello from the newsEventHandler handler !!');
 		console.log(msg);
-		console.log('End of message');
+		console.log('End of message');*/
+
+		/*console.log('newsEventHandler : ');
+		console.log(msg);*/
 
 		let toRemove = msg.length + this.newsArray.length - MAX_NEWS_ITEMS;
 		if (toRemove > 0)
@@ -57,7 +58,7 @@ export default class NewsPanel extends React.Component {
 			if (i > 0)
 				className = 'not-active';
 			i++;
-			return (<NewsItem className={className} news={newsElement.title} url={newsElement.url} key={i}/>);
+			return (<NewsItem className={className} news={newsElement.titre} link={newsElement.link} key={i}/>);
 		});
 		return (<div className="ticker-container">
 					<div className="ticker-caption">
