@@ -41,13 +41,34 @@ module.exports = {
       '/socket': { target: `${SERVER_URL}:${SOCKET_PORT}`, ws : true },
     },
     before(app){
-      app.get('/', function(req, res) {
+      /*app.get('/', function(req, res) {
         let INDEX_PAGE;
         let tmp_condition = true;
         if (tmp_condition)
           INDEX_PAGE = path.resolve(`${CONTENT_BASE}/app.html`);
         else
           INDEX_PAGE = path.resolve(`${CONTENT_BASE}/index.html`);
+        res.sendFile(`${INDEX_PAGE}`);
+      });
+      */
+
+      app.get('/', function(req, res) {
+        let INDEX_PAGE = path.resolve(`${CONTENT_BASE}/index.html`);
+        res.sendFile(`${INDEX_PAGE}`);
+      });
+
+      app.get('/app', function(req, res) {
+        let INDEX_PAGE = path.resolve(`${CONTENT_BASE}/app.html`);
+        res.sendFile(`${INDEX_PAGE}`);
+      });
+
+      app.get('/login', function(req, res) {
+        let INDEX_PAGE = path.resolve(`${CONTENT_BASE}/login.html`);
+        res.sendFile(`${INDEX_PAGE}`);
+      });
+
+      app.get('/register', function(req, res) {
+        let INDEX_PAGE = path.resolve(`${CONTENT_BASE}/register.html`);
         res.sendFile(`${INDEX_PAGE}`);
       });
 

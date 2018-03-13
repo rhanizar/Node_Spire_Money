@@ -6,7 +6,7 @@ export default class Symbol extends React.Component{
 	render(){
 		const company = this.props.company;
 		const symbol = this.props.symbol;
-		const logo = `img/${company}_logo.jpg`;
+		const logo = `img/${symbol}.jpg`;
 		return (
 			<div className="panel panel-info">
 				<div className="panel-heading">{company}

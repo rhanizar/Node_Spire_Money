@@ -13,9 +13,9 @@ export default class AboutCompany extends React.Component {
 					</span>
 				</div>
 				<div className="panel-body">
-					<img src={`img/${company}_logo.jpg`} className="aboutLogo" height="80" />
+					<img src={`img/${this.props.symbol}.jpg`} className="aboutLogo" height="80" />
 					<label className="aboutCompanyName">{company}</label>
-					<p>{this.props.about}</p>
+					<p className="aboutCompanyParagraph">{this.props.about}</p>
 				</div>
 			</div>
 		);
@@ -25,4 +25,5 @@ export default class AboutCompany extends React.Component {
 AboutCompany.propTypes = {
 	company : PropTypes.string.isRequired,
 	about : PropTypes.string.isRequired,
+	symbol : PropTypes.string.isRequired,
 };

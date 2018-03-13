@@ -17,7 +17,10 @@ export default class TabContent extends React.Component {
 			case 'live'      : content = (<LivePanel />); break;
 			case 'map'       : content = (<MapPanel />); break;
 			case 'account'   :  content = (<AccountPanel user={this.props.user} />); break;
-			case 'logout'    : content = (<h1> Logout [To Do] </h1>); break;
+			case 'logout'    : 
+				//content = (<h1> Logout [To Do] </h1>); 
+				window.location.href = '/';
+			break;
 		}
 
 		return (

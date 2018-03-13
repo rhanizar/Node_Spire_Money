@@ -51,6 +51,12 @@ export default class Dashboard extends React.Component{
 
 	dataIsComplete()
 	{
+		console.log('---------------');
+		console.log('this.company : '+this.company);
+		console.log('this.quoteData : '+this.quoteData);
+		console.log('this.states : '+this.states);
+		console.log('this.latestNews : '+this.latestNews);
+		console.log('---------------');
 		return ( this.company != null && this.quoteData != null &&
 				 this.states != null && this.latestNews != null );
 	}
@@ -146,9 +152,10 @@ export default class Dashboard extends React.Component{
 	}
 
 	render(){
-
+		console.log("Rendering 1;");
 		if (this.dataIsComplete() == false)
 			return null;
+		console.log("Rendering 2;");
 		return (
 			<div>
 				<TabContentHeader title="Dashboard" />
@@ -171,7 +178,7 @@ export default class Dashboard extends React.Component{
 
 				<div className="row">
 					<div className="col-md-12">
-						<AboutCompany company={this.company.name} about={this.company.about} />
+						<AboutCompany company={this.company.name} about={this.company.about} symbol={this.props.symbol} />
 					</div>
 				</div>
 			</div>

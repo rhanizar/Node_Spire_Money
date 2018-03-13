@@ -14,11 +14,11 @@ export default class CompanyState extends React.Component{
 				<div className="row no-padding">
 					<div className="panelSymbolMain">
 						<div className="panelBrandLogo">
-							<img src="img/microsoft_logo.jpg" className="img-rounded" height="80" />
+							<img src={`img/${this.props.symbol}.jpg`} className="img-rounded" height="80" />
 							<label className="panelSymbol">{this.props.symbol}</label> 
 						</div>
 						<br/>
-						<label className="panelVolume">{volume}</label> <br/>
+						<label className="panelVolume">{volume}</label> <br/> <br/>
 						<label className={`panelClosePrice ${styleClass}`}>
 							{price}
 						</label>

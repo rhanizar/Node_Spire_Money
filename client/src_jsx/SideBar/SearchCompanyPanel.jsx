@@ -42,8 +42,11 @@ export default class SearchCompanyPanel extends React.Component{
 				(element) => {
 					elements.push({
 						symbol : element.symbol,
-						label : element.company
+						label : element.name
 					});
+					console.log("***********************");
+					console.log(element)
+					console.log("***********************");
 					optionsArray.push(<option value={element.symbol} key={element.symbol}>{element.symbol}</option>);
 				}
 			);
@@ -55,7 +58,7 @@ export default class SearchCompanyPanel extends React.Component{
 			);
 		}
 
-		const type = (<Typeahead onChange={this.handleTypeAhead} options={elements} />);
+		const type = (<Typeahead onChange={this.handleTypeAhead} options={elements}/>);
 		return (
 			<form role="search">
 				<div className="form-group">
