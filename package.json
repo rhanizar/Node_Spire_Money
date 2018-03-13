@@ -36,6 +36,7 @@
   "dependencies": {
     "kafka-node": "^2.4.1",
     "load-script": "^1.0.0",
+    "mongoose": "^5.0.10",
     "react": "^16.2.0",
     "react-bootstrap-typeahead": "^2.5.0",
     "react-dom": "^16.2.0",

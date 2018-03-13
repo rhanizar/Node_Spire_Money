@@ -25,8 +25,8 @@ class App extends React.Component{
     this.symbols = null;
     this.user = null;
     this.routes =  {
-      symbols : '/api/symbols',
-      userInfo : '/api/user_info'
+      symbols : '/api/company/symbols',
+      userInfo : '/api/user/info'
     };
 
     this.fetchSymbols();
@@ -42,7 +42,8 @@ class App extends React.Component{
               this.forceUpdate();
             });
           }else
-            window.location.href = '/';
+            //window.location.href = '/';
+            console.log(response);
         }).catch(err => {
             console.log("Error in sending data to server: " + err.message);
         });

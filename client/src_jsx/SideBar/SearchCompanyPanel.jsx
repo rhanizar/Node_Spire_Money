@@ -44,9 +44,6 @@ export default class SearchCompanyPanel extends React.Component{
 						symbol : element.symbol,
 						label : element.name
 					});
-					console.log("***********************");
-					console.log(element)
-					console.log("***********************");
 					optionsArray.push(<option value={element.symbol} key={element.symbol}>{element.symbol}</option>);
 				}
 			);

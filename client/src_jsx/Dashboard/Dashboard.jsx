@@ -23,10 +23,10 @@ export default class Dashboard extends React.Component{
 		this.init();
 
 		this.routes =  {
-	      companyInfo : '/api/company_info',
-	      quoteDataPerDay : '/api/quote_data_last_day',
-	      companiesStates : '/api/companies_states',
-	      latestNews : '/api/latest_news'
+	      companyInfo : '/api/company/info',
+	      quoteDataPerDay : '/api/quote-per-minute/latest',
+	      companiesStates : '/api/company/states',
+	      latestNews : '/api/news/latest'
 	    };
 
 	    this.socket = socketClient.connect(`${window.location.host}`,
@@ -51,12 +51,6 @@ export default class Dashboard extends React.Component{
 
 	dataIsComplete()
 	{
-		console.log('---------------');
-		console.log('this.company : '+this.company);
-		console.log('this.quoteData : '+this.quoteData);
-		console.log('this.states : '+this.states);
-		console.log('this.latestNews : '+this.latestNews);
-		console.log('---------------');
 		return ( this.company != null && this.quoteData != null &&
 				 this.states != null && this.latestNews != null );
 	}
@@ -152,10 +146,8 @@ export default class Dashboard extends React.Component{
 	}
 
 	render(){
-		console.log("Rendering 1;");
 		if (this.dataIsComplete() == false)
 			return null;
-		console.log("Rendering 2;");
 		return (
 			<div>
 				<TabContentHeader title="Dashboard" />

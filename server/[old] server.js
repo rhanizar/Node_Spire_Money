@@ -1,43 +1,20 @@
-/*
-	- Data structure :
-		- QuoteHistory = { 
-			AAPL : [{
-				quote : { open : 1, high : 2, low : 3, close : 4 },
-				news : [{ url : 'url', title : 'title', "description": ""desc}]
-				time : 'time per minute'
-			}]
-		}
-		- NewsHistory = [{
-			news : { url : 'url', title : 'title' },
-			time : 'time per minute'
-		}]
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
+}
 
-		- StatesHistory = { 
-			MSFT : { volume : 2023210, price : 171.6520, difference : -1.59 }
-		};
+function getRandomFloat(min, max){
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive	
+}
 
-		- Kafka consumer output = {
-			symbol : 'AAPL'
-			quote : { open : 1, high : 2, low : 3, close : 4 },
-			news : { url : 'url', title : 'title' },
-			time : 'time per minute'
-		}
-
-		- Si (la donnée n'existe pas dans l'historique) alors attaquer le DAO pour le trouver
-*/
-
-/***************** Static data ************/
-	function getRandomInt(min, max) {
-	  min = Math.ceil(min);
-	  max = Math.floor(max);
-	  return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
-	}
-
-	function getRandomArbitrary(min, max) {
-	  return Math.random() * (max - min) + min;
-	}
-
-	const staticSymbols = 
+function getRandomArbitrary(min, max) {
+  return Math.random() * (max - min) + min;
+}
+//--- static data -----
+	const symbols = 
 	[
 	  {
 	    about: ' Apple est une entreprise multinationale américaine qui conçoit et commercialise des produits électroniques grand public, des ordinateurs personnels et des logiciels informatiques. Parmi les produits les plus connus de l\'entreprise se trouvent les ordinateurs Macintosh, l\'iPod, l\'iPhone et l\'iPad, la montre Apple Watch, le lecteur multimédia iTunes, la suite bureautique iWork, la suite multimédia iLife ou des logiciels à destination des professionnels tels que Final Cut Pro et Logic Pro. En 2017, l\'entreprise emploie 116 000 employés et exploite 499 Apple Stores répartis dans 22 pays5,6 et une boutique en ligne où sont vendus les appareils et logiciels d\'Apple mais aussi de tiers. Son bénéfice annuel pour l\'année 2017 est de 45,2 milliards de dollars. En 2014, Apple réalise 18 milliards de dollars de profits pour le dernier trimestre, battant le précédent record pour une entreprise cotée, établi en 2012 par ExxonMobil avec 16 milliards de dollars de bénéfice trimestriel7. Apple est créée le 1er avril1976 dans le garage de la maison d\'enfance de Steve Jobs à Los Altos en Californie par Steve Jobs, Steve Wozniak et Ronald Wayne8, puis constituée sous forme de société le 3 janvier 1977 à l\'origine sous le nom d\'Apple Computer, mais pour ses 30 ans et pour refléter la diversification de ses produits, le mot « computer » est retiré le 9 janvier 20079. ',
@@ -191,7 +168,7 @@
 	  }
 	];
 
-	const staticNews =  [{
+	const news =  [{
 		link : 'https://www.forbes.com/sites/joannmuller/2018/02/16/tesla-thinks-it-will-school-toyota-on-lean-manufacturing-fixing-model-3-launch-would-be-a-start',
 		titre : 'Musk Thinks Tesla Will School Toyota On Lean Manufacturing; Fixing Model 3 Launch Would Be A Start'
 		},
@@ -221,39 +198,46 @@
 		},
 	];
 
-	const staticStates = {
-		AAPL : { volume : getRandomInt(1000000, 3100000), price : getRandomInt(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
-		GOOGL : { volume : getRandomInt(1000000, 3100000), price : getRandomInt(100, 200), difference : 2.12 },
-		MSFT : { volume : getRandomInt(1000000, 3100000), price : getRandomInt(100, 200), difference : 3.14 },
-		FB : { volume : getRandomInt(1000000, 3100000), price : getRandomInt(100, 200), difference : -0.59 },
-		INTC : { volume : getRandomInt(1000000, 3100000), price : getRandomInt(100, 200), difference : 2.59 },
-		ORCL : { volume : getRandomInt(1000000, 3100000), price : getRandomInt(100, 200), difference : 1.6 },
-		CSCO : { volume : getRandomInt(1000000, 3100000), price : getRandomInt(100, 200), difference : 5.23 },
-		NVDA : { volume : getRandomInt(1000000, 3100000), price : getRandomInt(100, 200), difference : 2.60 },
-		IBM : { volume : getRandomInt(1000000, 3100000), price : getRandomInt(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
-		ADBE : { volume : getRandomInt(1000000, 3100000), price : getRandomInt(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
-		TXN : { volume : getRandomInt(1000000, 3100000), price : getRandomInt(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
-		AVGO : { volume : getRandomInt(1000000, 3100000), price : getRandomInt(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
-		VMW : { volume : getRandomInt(1000000, 3100000), price : getRandomInt(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
-		HPQ : { volume : getRandomInt(1000000, 3100000), price : getRandomInt(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
-		EA : { volume : getRandomInt(1000000, 3100000), price : getRandomInt(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
-		NOK : { volume : getRandomInt(1000000, 3100000), price : getRandomInt(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
-		ADSK : { volume : getRandomInt(1000000, 3100000), price : getRandomInt(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
-		WDC : { volume : getRandomInt(1000000, 3100000), price : getRandomInt(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
-		RHT : { volume : getRandomInt(1000000, 3100000), price : getRandomInt(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
-		TWTR : { volume : getRandomInt(1000000, 3100000), price : getRandomInt(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
-		SNAP : { volume : getRandomInt(1000000, 3100000), price : getRandomInt(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
-		CERN : { volume : getRandomInt(1000000, 3100000), price : getRandomInt(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
-		SWKS : { volume : getRandomInt(1000000, 3100000), price : getRandomInt(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
-		MSI : { volume : getRandomInt(1000000, 3100000), price : getRandomInt(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
-		NTAP : { volume : getRandomInt(1000000, 3100000), price : getRandomInt(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
-		OMC : { volume : getRandomInt(1000000, 3100000), price : getRandomInt(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
-		DVMT : { volume : getRandomInt(1000000, 3100000), price : getRandomInt(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
-		ANSS : { volume : getRandomInt(1000000, 3100000), price : getRandomInt(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
-		IPGP : { volume : getRandomInt(1000000, 3100000), price : getRandomInt(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
-		IXIC : { volume : getRandomInt(1000000, 3100000), price : getRandomInt(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
+	const states = {
+		AAPL : { volume : getRandomInt(1000000, 3100000), price : getRandomFloat(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
+		GOOGL : { volume : getRandomInt(1000000, 3100000), price : getRandomFloat(100, 200), difference : 2.12 },
+		MSFT : { volume : getRandomInt(1000000, 3100000), price : getRandomFloat(100, 200), difference : 3.14 },
+		FB : { volume : getRandomInt(1000000, 3100000), price : getRandomFloat(100, 200), difference : -0.59 },
+		INTC : { volume : getRandomInt(1000000, 3100000), price : getRandomFloat(100, 200), difference : 2.59 },
+		ORCL : { volume : getRandomInt(1000000, 3100000), price : getRandomFloat(100, 200), difference : 1.6 },
+		CSCO : { volume : getRandomInt(1000000, 3100000), price : getRandomFloat(100, 200), difference : 5.23 },
+		NVDA : { volume : getRandomInt(1000000, 3100000), price : getRandomFloat(100, 200), difference : 2.60 },
+		IBM : { volume : getRandomInt(1000000, 3100000), price : getRandomFloat(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
+		ADBE : { volume : getRandomInt(1000000, 3100000), price : getRandomFloat(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
+		TXN : { volume : getRandomInt(1000000, 3100000), price : getRandomFloat(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
+		AVGO : { volume : getRandomInt(1000000, 3100000), price : getRandomFloat(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
+		VMW : { volume : getRandomInt(1000000, 3100000), price : getRandomFloat(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
+		HPQ : { volume : getRandomInt(1000000, 3100000), price : getRandomFloat(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
+		EA : { volume : getRandomInt(1000000, 3100000), price : getRandomFloat(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
+		NOK : { volume : getRandomInt(1000000, 3100000), price : getRandomFloat(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
+		ADSK : { volume : getRandomInt(1000000, 3100000), price : getRandomFloat(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
+		WDC : { volume : getRandomInt(1000000, 3100000), price : getRandomFloat(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
+		RHT : { volume : getRandomInt(1000000, 3100000), price : getRandomFloat(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
+		TWTR : { volume : getRandomInt(1000000, 3100000), price : getRandomFloat(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
+		SNAP : { volume : getRandomInt(1000000, 3100000), price : getRandomFloat(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
+		CERN : { volume : getRandomInt(1000000, 3100000), price : getRandomFloat(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
+		SWKS : { volume : getRandomInt(1000000, 3100000), price : getRandomFloat(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
+		MSI : { volume : getRandomInt(1000000, 3100000), price : getRandomFloat(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
+		NTAP : { volume : getRandomInt(1000000, 3100000), price : getRandomFloat(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
+		OMC : { volume : getRandomInt(1000000, 3100000), price : getRandomFloat(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
+		DVMT : { volume : getRandomInt(1000000, 3100000), price : getRandomFloat(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
+		ANSS : { volume : getRandomInt(1000000, 3100000), price : getRandomFloat(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
+		IPGP : { volume : getRandomInt(1000000, 3100000), price : getRandomFloat(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
+		IXIC : { volume : getRandomInt(1000000, 3100000), price : getRandomFloat(100, 200), difference : parseFloat(getRandomArbitrary(-2, 3).toFixed(2)) },
 	};
-	
+
+	const now = new Date();
+	const now2 = new Date();
+	const now3 = new Date();
+
+	now2.setMinutes(now.getMinutes() + 1);
+	now3.setMinutes(now2.getMinutes() + 1);
+
 	const data = [
 		{
 			quote : {
@@ -262,7 +246,7 @@
 				low : 90,
 				close : 110,
 			},
-			news : staticNews,
+			news : news,
 			time : "2018-03-11 09:59:00"
 		},
 		{
@@ -272,7 +256,7 @@
 				low : 101,
 				close : 120,
 			},
-			news : staticNews,
+			news : news,
 			time : "2018-03-11 10:00:00"
 		},
 		{
@@ -282,107 +266,166 @@
 				low : 33,
 				close : 50,
 			},
-			news : staticNews,
+			news : news,
 			time : "2018-03-11 10:01:00"
 		}
 	];
-/*****************************************/
 
-const MAX_QUOTES_HISTORY_PER_SYMBOL = 5;
-const MAX_NEWS_HISTORY = 5;
-let QuoteHistory = null;
-let StatesHistory = null;
-let Symbols = null;
-let NewsHistory = [];
+//---------------------
+const express = require('express');
+const sourceMapSupport = require('source-map-support');
+const routes = {
+	      companyInfo : '/api/company_info',
+	      quoteDataPerDay : '/api/quote_data_last_day',
+	      symbols : '/api/symbols',
+      	  userInfo : '/api/user_info',
+      	  companiesStates : '/api/companies_states',
+      	  latestNews : '/api/latest_news'
+};
 
-class ServerHistoryKeeper 
-{
-	static Init()
+/*------ Kafka configuration ------------*/
+
+const TOPIC_NAME = 'SpireMoney';
+const ZOOKEEPER_HOST = 'localhost:2181';
+const PARTITION = 0;
+
+/*---------------------------------------*/
+
+/*------------ Import classes -----------------*/
+
+const RealTimeMiddleware = require('./RealTimeMiddleware');
+const KafkaConsumer = require('./KafkaConsumer');
+const ServerHistoryKeeper = require('./ServerHistoryKeeper');
+
+/*---------------------------------------*/
+
+// Initialisation
+let app = express();
+let PORT = process.env.PORT || 3000;
+
+ServerHistoryKeeper.Init(symbols); // Symbols from MongoDB
+
+sourceMapSupport.install();
+/*
+let CLIENT_DIR = path.resolve(`./client/static_content/`);
+let INDEX_PAGE = `${CLIENT_DIR}/index.html`;
+*/
+
+const user = {'x-auth' : '1233333', name : 'Account name', email : 'email@email.com', username : 'user_2016'};
+
+app.get(routes.symbols, (req, res) => {
+    res.send({ symbols : symbols });
+    //res.status(500).send({});
+});
+
+app.get(routes.userInfo, (req, res) => {
+	res.send({ user : user });
+});
+
+app.get(routes.companyInfo, (req, res) => {
+	console.log(req.query);
+	let symbol = req.query.symbol;
+	if (symbol)
 	{
-		if (Symbols == null)
-			Symbols = [
-				{name : 'Apple', symbol : 'AAPL'},
-				{name : 'Facebook', symbol : 'FB'},
-				{name : 'Intel', symbol : 'INTC'},
-				{name : 'Nasdaq', symbol : 'IXIC'},
-				]; // BD Attack
-
-		if (QuoteHistory == null){
-			QuoteHistory = {};
-			Symbols.forEach((element) => {
-				QuoteHistory[element] = [];
-			});
+		let company = null;
+		for (element in symbols){
+			if (symbols[element].symbol == symbol)
+			{
+				company = { name : symbols[element].name, about : symbols[element].about }; // Attaquer la base de données		
+				break;
+			}
 		}
-
-		if(StatesHistory == null){
-			StatesHistory = {};
-			Symbols.forEach((element) => {
-				StatesHistory[element] = {volume : 0, price : 0, difference : 0};
-			});
-		}
-
-	}
-
-	//Input form : QuoteHistory form
-	static newDataFromConsumer(symbol, data)
-	{
-		//Adding the quote
-		if (data.quote.open)
-		{
-			let quote = data.quote;
-			if (QuoteHistory[symbol].length == MAX_QUOTES_HISTORY_PER_SYMBOL)
-				QuoteHistory[symbol] = QuoteHistory[symbol].slice(1);
-			let obj = {
-				quote : quote,
-				news : data.news,
-				time : data.time
-			};
 			
-			QuoteHistory[symbol].push(obj);
-
-			/*console.log(`QuoteHistory[${symbol}] = `);
-			console.log(QuoteHistory[symbol]);*/
-			//Calculating the state
-			const last = StatesHistory[symbol];
-			const difference = ((quote.close - last.price) / last.price) * 100;
-
-			StatesHistory[symbol] = {volume : quote.volume, price : quote.close, difference : difference};
-		}
-		
-		//Adding the news
-		if (data.news.length > 0){
-			let toRemove = data.news.length + NewsHistory.length - MAX_NEWS_HISTORY;
-			if (toRemove > 0)
-				NewsHistory = NewsHistory.slice(toRemove);
-
-			NewsHistory = NewsHistory.concat(data.news);
-		}
-
+		console.log('Company : '+company);
+		res.send({ company : company });
 	}
+});
 
-	static fetchNews(){
-		//BD Attack [If not exist on the server]
-		//return NewsHistory;
-		return staticNews;
-	}
+app.get(routes.latestNews, (req, res) => {
+	//console.log('News : '+ServerHistoryKeeper.fetchNews());
+	//res.send({ latestNews : ServerHistoryKeeper.fetchNews() });
+	res.send({ latestNews : news });
+});
 
-	static fetchStates(){
-		//BD Attack [If not exist on the server]
-		//return StatesHistory;
-		return staticStates;
-	}
+app.get(routes.quoteDataPerDay, (req, res) => {
+	let symbol = req.query.symbol;
+	console.log(routes.quoteDataPerDay+' : Symbol : '+symbol)
+	if (symbol)
+		//res.send({ quoteData : ServerHistoryKeeper.fetchQuotes(symbol) });
+		res.send({ quoteData : data });
+});
 
-	static fetchQuotes(symbol){
-		//BD Attack [If not exist on the server]
-		//return QuoteHistory[symbol];
-		return data;
-	}
+app.get(routes.companiesStates, (req, res) => {
+	res.send({ states : states });
+});
 
-	static fetchSymbols()
-	{
-		return Symbols;
-	}
+app.listen(PORT, () => {
+    console.log(`App listening on port ${PORT}`);
+});
+
+const realTimeMiddleware = new RealTimeMiddleware(app, PORT+1);
+
+//Kafka consumer manipulation
+const onMsgKafka = function (message) {
+		/*console.log("message Kafka :");
+		console.log(message);*/
+		//const msg = message; // Just for test
+    	const msg = JSON.parse(message.value);
+		console.log("message Kafka [parsed] :");
+		console.log(msg);
+    	const formattedMessage = formatKafkaMsg(msg);
+    	//const formattedMessage = msg.data;
+    	ServerHistoryKeeper.newDataFromConsumer(msg.symbol, formattedMessage);
+    	if (formattedMessage.news.length > 0)
+    		realTimeMiddleware.sendNews(formattedMessage.news); // Broadcast
+    	
+    	if (formattedMessage.quote.open){
+    		console.log("Sending quote : ");
+    		console.log(formattedMessage.quote)
+    		realTimeMiddleware.sendQuote(msg.symbol, formattedMessage); // Multicast
+    		realTimeMiddleware.sendStates(msg.symbol, ServerHistoryKeeper.fetchStates()); // Broadcast
+    	}
+};
+
+/*let i = 0;
+let tabs = [];
+symbols.forEach((element) => {
+	tabs[element.symbol] = 0;
+	setInterval(function(){
+		if (tabs[element.symbol] == data.length)
+			tabs[element.symbol] = 0;
+		realTimeMiddleware.sendQuote(element.symbol, data[tabs[element.symbol]]); // Multicast
+		tabs[element.symbol]++;
+	},3000);
+});*/
+
+
+const onErrorKafka = function (err) {
+   	console.log('KafkaConsumer error :');
+   	console.log(err);
+};
+
+function formatKafkaMsg(msg)
+{
+	let result = msg.data;
+	let open = parseFloat( parseFloat(result.quote.open).toFixed(2));
+	let high = parseFloat( parseFloat(result.quote.high).toFixed(2));
+	let low = parseFloat( parseFloat(result.quote.low).toFixed(2));
+	let close = parseFloat( parseFloat(result.quote.close).toFixed(2));
+	let volume = parseFloat( parseFloat(result.quote.volume).toFixed(2));
+	result.quote = { open : open, high : high, low : low, close : close };
+	return result;
 }
 
+const kafkaConsumer = new KafkaConsumer(TOPIC_NAME, ZOOKEEPER_HOST, PARTITION, onMsgKafka, onErrorKafka);
 
-module.exports = ServerHistoryKeeper;
+
+//Static test for socket.io
+/*let i = 0;
+symbols.forEach((element) => {
+	setInterval(function(){
+		i++;
+		console.log("Sending for "+element.symbol);
+		realTimeMiddleware.sendQuote(element.symbol, i);
+	}, 1000);
+});*/

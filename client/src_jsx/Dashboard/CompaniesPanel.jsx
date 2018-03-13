@@ -37,10 +37,6 @@ export default class CompaniesPanel extends React.Component {
 			i++;
 		}
 
-
-		/*console.log('Compnanies State : ');
-		console.log(this.companies);*/
-
 		let me = this;
 
 

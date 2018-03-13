@@ -1,41 +1,37 @@
-//CompanyRoute.js
-// importing the packages we need: express
-// express is used for building the REST APIs
+// CompanyRoute.js
+// Root : /company
+/*
+    Routes : 
+        /symbols : GET symbols
+        /info    : GET company info by symbol
+        /states  : GET the company states
+*/
+
 const express = require('express');
-//setup express router
+const ServerHistoryKeeper = require('../ServerHistoryKeeper');
+
+//Setup express router
 const router = express.Router();
-// import mongoose schema
+//Import mongoose schema
 const Company = require('../models/Company');
-//get companies
-router.get('/', (req, res, next) => {
-	Company.findAll( (err, companies) => {
-        if (err) {
-            res.send(err);
-        }
-        res.json(companies);
-	});
+
+//Get symbols
+router.get('/symbols', (req, res) => {
+    const symbols = ServerHistoryKeeper.fetchSymbols();
+    res.send({ symbols : symbols });
 });
-//save companies
-router.post('/', (req, res, next) => {
-    const companies = req.body;
-    for(var cmp in companies){
-        var comp = new Company(companies[cmp]);
-        Company.saveCompany(comp, (err) => {
-            if (err)
-            res.send(err);
-            res.status(201).json(); 
-        });
-    };
+
+//Get company info by symbol
+router.get('/info', (req, res) => {
+	const symbol = req.query.symbol;
+    company = { name : `Company name of ${symbol}`, about : `About the company name of ${symbol}` };
+    res.send({ company : company });
 });
-//get companies with symbol
-router.post('/symbol', (req, res, next) => {
-	const symbol = req.body.symbol;
-    Company.findBySymbol(symbol, (err, companies) => {
-        if (err) {
-            res.send(err);
-        }
-        res.json(companies);
-	});
+
+//Get the company states
+router.get('/states', (req, res) => {
+    const states = ServerHistoryKeeper.fetchStates();
+    res.send({ states : states });
 });
 
 module.exports = router;

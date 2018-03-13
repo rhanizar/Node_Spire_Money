@@ -66,8 +66,6 @@ export default class RealTimePanel extends React.Component {
 
 	newQuoteEventHandler(msg)
 	{
-		console.log('newQuoteEventHandler : ');
-		console.log(msg);
 		let dataFormatted = this.state.dataFormatted;
 
 		if (dataFormatted.length == MAX_QUOTES_ITEMS)

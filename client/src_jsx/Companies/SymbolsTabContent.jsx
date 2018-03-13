@@ -23,7 +23,7 @@ export default class SymbolsTabContent extends React.Component{
 			let panels = element.map(panel => {
 				return (
 					<div className="col-md-4" key={panel.symbol}>
-						<Symbol company={panel.company} symbol={panel.symbol} key={panel.symbol}/>
+						<Symbol company={panel.name} symbol={panel.symbol} key={panel.symbol}/>
 					</div>);
 			});
 			i++;

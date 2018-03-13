@@ -37,7 +37,7 @@ module.exports = {
   devServer: {
     contentBase: CONTENT_BASE,
     proxy: {
-      '/api/*': { target: `${SERVER_URL}:${SERVER_PORT}`},
+      '/api/*': { target: `${SERVER_URL}:${SERVER_PORT}`, pathRewrite: {"^/api" : ""}},
       '/socket': { target: `${SERVER_URL}:${SOCKET_PORT}`, ws : true },
     },
     before(app){
