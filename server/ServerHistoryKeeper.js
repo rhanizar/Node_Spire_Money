@@ -310,14 +310,14 @@ class ServerHistoryKeeper
 		if (QuoteHistory == null){
 			QuoteHistory = {};
 			Symbols.forEach((element) => {
-				QuoteHistory[element] = [];
+				QuoteHistory[element.symbol] = [];
 			});
 		}
 
 		if(StatesHistory == null){
 			StatesHistory = {};
 			Symbols.forEach((element) => {
-				StatesHistory[element] = {volume : 0, price : 0, difference : 0};
+				StatesHistory[element.symbol] = { volume : 0, price : 0, difference : 0 };
 			});
 		}
 
@@ -344,7 +344,15 @@ class ServerHistoryKeeper
 			console.log(QuoteHistory[symbol]);*/
 			//Calculating the state
 			const last = StatesHistory[symbol];
-			const difference = ((quote.close - last.price) / last.price) * 100;
+			/*console.log('Last : ');
+			console.log(last);
+			console.log('quote : ');
+			console.log(quote);*/
+
+			let difference = 100;
+			if (last.price != 0)
+				difference = ((quote.close - last.price) / last.price) * 100;
+			difference = parseFloat(difference.toFixed(2));
 
 			StatesHistory[symbol] = {volume : quote.volume, price : quote.close, difference : difference};
 		}
@@ -362,20 +370,20 @@ class ServerHistoryKeeper
 
 	static fetchNews(){
 		//BD Attack [If not exist on the server]
-		//return NewsHistory;
-		return staticNews;
+		return NewsHistory;
+		//return staticNews;
 	}
 
 	static fetchStates(){
 		//BD Attack [If not exist on the server]
-		//return StatesHistory;
-		return staticStates;
+		return StatesHistory;
+		//return staticStates;
 	}
 
 	static fetchQuotes(symbol){
 		//BD Attack [If not exist on the server]
-		//return QuoteHistory[symbol];
-		return data;
+		return QuoteHistory[symbol];
+		//return data;
 	}
 
 	static fetchSymbols()
@@ -383,6 +391,5 @@ class ServerHistoryKeeper
 		return Symbols;
 	}
 }
-
 
 module.exports = ServerHistoryKeeper;

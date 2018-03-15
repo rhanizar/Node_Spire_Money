@@ -69,19 +69,22 @@
 			console.log(message);*/
 			//const msg = message; // Just for test
 	    	const msg = JSON.parse(message.value);
-			console.log("message Kafka [parsed] :");
-			console.log(msg);
+			//console.log("message Kafka [parsed] :");
+			//console.log(msg);
 	    	const formattedMessage = formatKafkaMsg(msg);
+	    	console.log("formattedMessage : ");
+	    	console.log(formattedMessage);
 	    	//const formattedMessage = msg.data;
 	    	ServerHistoryKeeper.newDataFromConsumer(msg.symbol, formattedMessage);
 	    	if (formattedMessage.news.length > 0)
 	    		realTimeMiddleware.sendNews(formattedMessage.news); // Broadcast
 	    	
 	    	if (formattedMessage.quote.open){
-	    		console.log("Sending quote : ");
-	    		console.log(formattedMessage.quote)
+	    		//console.log("Sending quote : ");
+	    		//console.log(formattedMessage.quote)
 	    		realTimeMiddleware.sendQuote(msg.symbol, formattedMessage); // Multicast
-	    		realTimeMiddleware.sendStates(msg.symbol, ServerHistoryKeeper.fetchStates()); // Broadcast
+	    		const states = ServerHistoryKeeper.fetchStates();
+	    		realTimeMiddleware.sendStates(msg.symbol, states); // Broadcast
 	    	}
 	};
 
@@ -93,7 +96,7 @@
 		let low = parseFloat( parseFloat(result.quote.low).toFixed(2));
 		let close = parseFloat( parseFloat(result.quote.close).toFixed(2));
 		let volume = parseFloat( parseFloat(result.quote.volume).toFixed(2));
-		result.quote = { open : open, high : high, low : low, close : close };
+		result.quote = { open : open, high : high, low : low, close : close, volume : volume,  };
 		return result;
 	}
 

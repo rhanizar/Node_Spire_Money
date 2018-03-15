@@ -24,13 +24,13 @@ export default class CompaniesPanel extends React.Component {
 			let j = 0;
 			while(j < 4 && total < keys.length){
 				let key = keys[total];
-				let obj = {symbol : key, state : this.props.companies[key]};
+				let obj = { symbol : key, state : this.props.companies[key] };
 				if (!(this.GlobalTab[i]))
 					this.GlobalTab[i] = [ obj ];
 				else
 					this.GlobalTab[i].push(obj);
 
-				this.indexes[key] = { line : i, column : j};
+				this.indexes[key] = { line : i, column : j };
 				total++;
 				j++;
 			}
@@ -59,9 +59,11 @@ export default class CompaniesPanel extends React.Component {
 
 	newStateEventHandler(msg)
 	{
-		/*console.log('Hello from the newStateEventHandler handler !!');
-		console.log(msg);
-		console.log('End of message');*/
+		const index = this.indexes[msg.symbol];
+		const tab = this.GlobalTab[index.line];
+		tab[index.column].state = msg.state;
+		const child = this.refs[msg.symbol];
+		child.forceUpdate();
 	}
 
 	componentWillUnmount() {
@@ -73,7 +75,7 @@ export default class CompaniesPanel extends React.Component {
 		let i = 0;
 		const content = [];
 		this.GlobalTab[this.state.currentIndex].forEach((element) => {
-			content[i] = (<CompanyState  symbol={element.symbol} volume={element.state.volume}
+			content[i] = (<CompanyState ref={element.symbol} symbol={element.symbol} volume={element.state.volume}
 					 price={element.state.price} difference={element.state.difference} key={element.symbol} />);
 			i++;
 		});

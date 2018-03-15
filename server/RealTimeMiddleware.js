@@ -42,9 +42,10 @@ class RealTimeMiddleware
 		this.io.to(symbol).emit(NEW_QUOTE_EVENT, quote);
 	}
 
-	sendStates(states)
+	sendStates(symbol, states)
 	{
-		this.io.emit(NEW_STATES_EVENT, states);	
+		const obj = { symbol : symbol, state : states[symbol]};
+		this.io.emit(NEW_STATES_EVENT, obj);	
 	}
 }
 
