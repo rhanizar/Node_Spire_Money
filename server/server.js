@@ -4,8 +4,10 @@
 	const mongoose = require('mongoose');
 	const sourceMapSupport = require('source-map-support');
 	const QuotePerMinuteRoutes = require('./routes/QuotePerMinuteRoute');
+	const QuotePerMinute = require('./models/QuotePerMinute');
 	const CompanyRoutes = require('./routes/CompanyRoute');
 	const NewsRoutes = require('./routes/NewsRoute');
+	const News = require('./models/News');
 	const UserRoutes = require('./routes/UserRoute');
 	const RealTimeMiddleware = require('./RealTimeMiddleware');
 	const KafkaConsumer = require('./KafkaConsumer');
@@ -90,22 +92,6 @@
 	    	}
 	};
 
-	function saveQuoteToDB(symbol, formattedMessage)
-	{
-		const quote = formattedMessage.quote;
-		quote.minute = formattedMessage.time;
-		quote.symbol = symbol;
-
-	}
-
-	function saveNewsToDB(symbol, formattedMessage)
-	{
-		const news = formattedMessage.news;
-		news.forEach((newsItem) => {
-			const item = { minute : formattedMessage.time, symbol : symbol, title : newsItem.titre, url : newsItem.link };
-		});
-	}
-
 	function formatKafkaMsg(msg)
 	{
 		let result = msg.data;
@@ -123,15 +109,45 @@
 	   	console.log(err);
 	};
 
-	const kafkaConsumer = new KafkaConsumer(TOPIC_NAME, ZOOKEEPER_HOST, PARTITION, onMsgKafka, onErrorKafka);
+	const 	kafkaConsumer = new KafkaConsumer(TOPIC_NAME, ZOOKEEPER_HOST, PARTITION, onMsgKafka, onErrorKafka);
 
+// Database middleware functions
+	function saveQuoteToDB(symbol, formattedMessage)
+	{
+		const Quote = new QuotePerMinute({
+	        "close"  : formattedMessage.quote.close, //THE VALUES YOU WANT TO INSERT
+	        "high"   : formattedMessage.quote.high,
+	        "low"    : formattedMessage.quote.low,
+	        "open"   : formattedMessage.quote.open,
+	        "volume" : formattedMessage.quote.volume,
+	        "minute" : formattedMessage.time,
+	        "symbol" : symbol,
+	    });
+
+	    QuotePerMinute.saveQuotePerMinute(Quote);
+	}
+
+	function saveNewsToDB(symbol, formattedMessage)
+	{
+		const news = formattedMessage.news;
+		news.forEach((newsItem) => {
+			const item = {
+					time : formattedMessage.time, 
+					symbol : symbol, 
+					titre : newsItem.titre, 
+					link : newsItem.link 
+			};
+
+			News.saveNews(item);
+		});
+	}
 //Listening for requests
 	app.listen(PORT, () => {
 	    console.log(`App listening on port ${PORT}`);
 	});
 
 //Tests
-/*let i = 0;
+/* let i = 0;
 let tabs = [];
 let data = ServerHistoryKeeper.fetchQuotes();
 

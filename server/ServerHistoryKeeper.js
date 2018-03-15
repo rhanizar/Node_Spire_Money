@@ -1,25 +1,9 @@
 /*
-	- Data structure :
-		- QuoteHistory = { 
-			AAPL : [{
-				quote : { open : 1, high : 2, low : 3, close : 4 },
-				news : [{ url : 'url', title : 'title', "description": ""desc}]
-				time : 'time per minute'
-			}]
-		}
-		- NewsHistory = [{
-			news : { url : 'url', title : 'title' },
-			time : 'time per minute'
-		}]
-
-		- StatesHistory = { 
-			MSFT : { volume : 2023210, price : 171.6520, difference : -1.59 }
-		};
-
+	!- Data structure :
 		- Kafka consumer output = {
 			symbol : 'AAPL'
 			quote : { open : 1, high : 2, low : 3, close : 4 },
-			news : { url : 'url', title : 'title' },
+			news : [{ url : 'url', title : 'title' }],
 			time : 'time per minute'
 		}
 
@@ -28,6 +12,7 @@
 
 //Import mongoose schema
 const Company = require('./models/Company');
+const News = require('./models/News');
 
 /***************** Static data ************/
 	function getRandomInt(min, max) {
@@ -40,7 +25,7 @@ const Company = require('./models/Company');
 	  return Math.random() * (max - min) + min;
 	}
 
-	const staticSymbols = 
+	/*const staticSymbols = 
 	[
 	  {
 	    about: ' Apple est une entreprise multinationale américaine qui conçoit et commercialise des produits électroniques grand public, des ordinateurs personnels et des logiciels informatiques. Parmi les produits les plus connus de l\'entreprise se trouvent les ordinateurs Macintosh, l\'iPod, l\'iPhone et l\'iPad, la montre Apple Watch, le lecteur multimédia iTunes, la suite bureautique iWork, la suite multimédia iLife ou des logiciels à destination des professionnels tels que Final Cut Pro et Logic Pro. En 2017, l\'entreprise emploie 116 000 employés et exploite 499 Apple Stores répartis dans 22 pays5,6 et une boutique en ligne où sont vendus les appareils et logiciels d\'Apple mais aussi de tiers. Son bénéfice annuel pour l\'année 2017 est de 45,2 milliards de dollars. En 2014, Apple réalise 18 milliards de dollars de profits pour le dernier trimestre, battant le précédent record pour une entreprise cotée, établi en 2012 par ExxonMobil avec 16 milliards de dollars de bénéfice trimestriel7. Apple est créée le 1er avril1976 dans le garage de la maison d\'enfance de Steve Jobs à Los Altos en Californie par Steve Jobs, Steve Wozniak et Ronald Wayne8, puis constituée sous forme de société le 3 janvier 1977 à l\'origine sous le nom d\'Apple Computer, mais pour ses 30 ans et pour refléter la diversification de ses produits, le mot « computer » est retiré le 9 janvier 20079. ',
@@ -192,9 +177,10 @@ const Company = require('./models/Company');
 	    name: 'Omnicom Group Inc',
 	    symbol: 'OMC'
 	  }
-	];
+	];*/
 
-	const staticNews =  [{
+	const staticNews =  [
+		{
 		link : 'https://www.forbes.com/sites/joannmuller/2018/02/16/tesla-thinks-it-will-school-toyota-on-lean-manufacturing-fixing-model-3-launch-would-be-a-start',
 		titre : 'Musk Thinks Tesla Will School Toyota On Lean Manufacturing; Fixing Model 3 Launch Would Be A Start'
 		},
@@ -293,16 +279,29 @@ const Company = require('./models/Company');
 
 const MAX_QUOTES_HISTORY_PER_SYMBOL = 5;
 const MAX_NEWS_HISTORY = 5;
+
+/* QuoteHistory = { 
+			AAPL : [{
+				quote : { open : 1, high : 2, low : 3, close : 4 },
+				news : [{ link : 'url', titre : 'title', description : "desc" }]
+				time : 'time per minute'
+			}]
+} */
 let QuoteHistory = null;
+
+/* StatesHistory = { AAPL : { volume : 0, price : 0, difference : 0 } } */
 let StatesHistory = null;
+
+/* Symbols = [ { name: "Apple Inc", symbol: "AAPL" } ] */
 let Symbols = null;
+
+/* NewsHistory = [{ symbol : 'AAPL', time : 'Date', link : 'link', titre : 'title' }] */
 let NewsHistory = [];
 
 class ServerHistoryKeeper 
 {
 	static Init()
 	{
-
 		Company.findAll( (err, companies) => {
 			Symbols = companies;
 			if (QuoteHistory == null){
@@ -319,7 +318,11 @@ class ServerHistoryKeeper
 				});
 			}
 		});
-		
+
+		News.findLatest( (err, news) => {
+				if (!err)
+					NewsHistory = news;
+		});
 	}
 
 	//Input form : QuoteHistory form
@@ -362,27 +365,25 @@ class ServerHistoryKeeper
 			if (toRemove > 0)
 				NewsHistory = NewsHistory.slice(toRemove);
 
+			data.news.forEach((newsItem) => {
+				newsItem.time = data.time;
+				newsItem.symbol = symbol;
+			});
+
 			NewsHistory = NewsHistory.concat(data.news);
 		}
-
 	}
 
 	static fetchNews(){
-		//BD Attack [If not exist on the server]
 		return NewsHistory;
-		//return staticNews;
 	}
 
 	static fetchStates(){
-		//BD Attack [If not exist on the server]
 		return StatesHistory;
-		//return staticStates;
 	}
 
 	static fetchQuotes(symbol){
-		//BD Attack [If not exist on the server]
 		return QuoteHistory[symbol];
-		//return data;
 	}
 
 	static fetchSymbols()
