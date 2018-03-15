@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 
 const NewsSchema = mongoose.Schema({
-	minute : Date,
-	symbol : String,
-	title : String,
-	url : String
+    minute : Date,
+    symbol : String,
+    title : String,
+    url : String
 }, {
     versionKey: false 
 });
@@ -24,5 +24,9 @@ NewsSchema.statics.findOneSBySymbol = function  (sym, min, callback) {
 //Find all news
 NewsSchema.statics.findAll = function (start, end, callback){
     this.find({"minute": {"$gte": start, "$lt": end}}, 'title url symbol -_id', callback);
+}
+//Find latest news
+NewsSchema.statics.findLatest = function (callback){
+    this.find({}, 'title url -_id').sort({'minute': -1}).limit(30).exec(callback);;
 }
 module.exports = mongoose.model('News', NewsSchema);

@@ -76,7 +76,7 @@ export default class CompaniesPanel extends React.Component {
 		const content = [];
 		this.GlobalTab[this.state.currentIndex].forEach((element) => {
 			content[i] = (<CompanyState ref={element.symbol} symbol={element.symbol} volume={element.state.volume}
-					 price={element.state.price} difference={element.state.difference} key={element.symbol} />);
+					 price={element.state. 	price} difference={element.state.difference} key={element.symbol} />);
 			i++;
 		});
 /*

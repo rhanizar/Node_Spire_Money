@@ -76,17 +76,35 @@
 	    	console.log(formattedMessage);
 	    	//const formattedMessage = msg.data;
 	    	ServerHistoryKeeper.newDataFromConsumer(msg.symbol, formattedMessage);
-	    	if (formattedMessage.news.length > 0)
+	    	if (formattedMessage.news.length > 0){
 	    		realTimeMiddleware.sendNews(formattedMessage.news); // Broadcast
-	    	
+	    		saveNewsToDB(msg.symbol, formattedMessage);
+	    	}
+
 	    	if (formattedMessage.quote.open){
 	    		//console.log("Sending quote : ");
 	    		//console.log(formattedMessage.quote)
 	    		realTimeMiddleware.sendQuote(msg.symbol, formattedMessage); // Multicast
-	    		const states = ServerHistoryKeeper.fetchStates();
-	    		realTimeMiddleware.sendStates(msg.symbol, states); // Broadcast
+	    		realTimeMiddleware.sendStates(msg.symbol, ServerHistoryKeeper.fetchStates()); // Broadcast
+	    		saveQuoteToDB(msg.symbol, formattedMessage);
 	    	}
 	};
+
+	function saveQuoteToDB(symbol, formattedMessage)
+	{
+		const quote = formattedMessage.quote;
+		quote.minute = formattedMessage.time;
+		quote.symbol = symbol;
+
+	}
+
+	function saveNewsToDB(symbol, formattedMessage)
+	{
+		const news = formattedMessage.news;
+		news.forEach((newsItem) => {
+			const item = { minute : formattedMessage.time, symbol : symbol, title : newsItem.titre, url : newsItem.link };
+		});
+	}
 
 	function formatKafkaMsg(msg)
 	{

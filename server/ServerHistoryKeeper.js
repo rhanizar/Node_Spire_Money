@@ -26,6 +26,9 @@
 		- Si (la donnée n'existe pas dans l'historique) alors attaquer le DAO pour le trouver
 */
 
+//Import mongoose schema
+const Company = require('./models/Company');
+
 /***************** Static data ************/
 	function getRandomInt(min, max) {
 	  min = Math.ceil(min);
@@ -299,28 +302,24 @@ class ServerHistoryKeeper
 {
 	static Init()
 	{
-		if (Symbols == null)
-			Symbols = [
-				{name : 'Apple', symbol : 'AAPL'},
-				{name : 'Facebook', symbol : 'FB'},
-				{name : 'Intel', symbol : 'INTC'},
-				{name : 'Nasdaq', symbol : 'IXIC'},
-				]; // BD Attack
 
-		if (QuoteHistory == null){
-			QuoteHistory = {};
-			Symbols.forEach((element) => {
-				QuoteHistory[element.symbol] = [];
-			});
-		}
+		Company.findAll( (err, companies) => {
+			Symbols = companies;
+			if (QuoteHistory == null){
+				QuoteHistory = {};
+				Symbols.forEach((element) => {
+					QuoteHistory[element.symbol] = [];
+				});
+			}
 
-		if(StatesHistory == null){
-			StatesHistory = {};
-			Symbols.forEach((element) => {
-				StatesHistory[element.symbol] = { volume : 0, price : 0, difference : 0 };
-			});
-		}
-
+			if(StatesHistory == null){
+				StatesHistory = {};
+				Symbols.forEach((element) => {
+					StatesHistory[element.symbol] = { volume : 0, price : 0, difference : 0 };
+				});
+			}
+		});
+		
 	}
 
 	//Input form : QuoteHistory form

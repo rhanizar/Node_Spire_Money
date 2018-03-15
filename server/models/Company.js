@@ -15,7 +15,7 @@ CompanySchema.statics.saveCompany = function(data, callback){
 };
 //search for a symbol 
 CompanySchema.statics.findBySymbol = function  (sym, callback) {
-    this.find({ symbol: sym }, 'name symbol about -_id', callback);
+    this.find({ symbol: sym }, 'name about -_id', callback);
 };
 //Find all companies 
 CompanySchema.statics.findAll = function (callback){

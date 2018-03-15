@@ -8,8 +8,8 @@ const staticData = [
         data : {
             quote : { open : 100, high : 200, low : 90, close : 110, volume : 1000000 },
             news : [
-                { url : 'url 1', titre : 'AAPL 1.1', "description": "desc AAPL 1.1"},
-                { url : 'url 1', titre : 'AAPL 1.2', "description": "desc AAPL 1.2"}
+                { link : 'link1', titre : 'AAPL 1.1', "description": "desc AAPL 1.1"},
+                { link : 'link1', titre : 'AAPL 1.2', "description": "desc AAPL 1.2"}
             ],
             time : '2018-02-27 16:00:00'
         },
@@ -19,8 +19,8 @@ const staticData = [
         data : {
             quote : { open : 110, high : 210, low : 100, close : 120, volume : 1000000 },
             news : [
-                { url : 'url 1', titre : 'FB 1.1', "description": "desc FB 1.1"},
-                { url : 'url 1', titre : 'FB 1.2', "description": "desc FB 1.2"}
+                { link : 'link1', titre : 'FB 1.1', "description": "desc FB 1.1"},
+                { link : 'link1', titre : 'FB 1.2', "description": "desc FB 1.2"}
             ],
             time : '2018-02-27 16:00:00'
         },
@@ -30,8 +30,8 @@ const staticData = [
         data : {
             quote : { open : 110, high : 210, low : 100, close : 120, volume : 1000000 },
             news : [
-                { url : 'url 1', titre : 'INTC 1.1', "description": "desc INTC 1.1"},
-                { url : 'url 1', titre : 'INTC 1.2', "description": "desc INTC 1.2"}
+                { link : 'link1', titre : 'INTC 1.1', "description": "desc INTC 1.1"},
+                { link : 'link1', titre : 'INTC 1.2', "description": "desc INTC 1.2"}
             ],
             time : '2018-02-27 16:00:00'
         },
@@ -41,8 +41,8 @@ const staticData = [
         data : {
             quote : { open : 110, high : 210, low : 100, close : 120, volume : 1000000 },
             news : [
-                { url : 'url 1', titre : 'IXIC 1.1', "description": "desc IXIC 1.1"},
-                { url : 'url 1', titre : 'IXIC 1.2', "description": "desc IXIC 1.2"}
+                { link : 'link1', titre : 'IXIC 1.1', "description": "desc IXIC 1.1"},
+                { link : 'link1', titre : 'IXIC 1.2', "description": "desc IXIC 1.2"}
             ],
             time : '2018-02-27 16:00:00'
         },
@@ -54,8 +54,8 @@ const staticData = [
         data : {
             quote : { open : 100, high : 200, low : 90, close : 112.2, volume : 1000000 },
             news : [
-                { url : 'url 1', titre : 'AAPL 2.1', "description": "desc AAPL 2.1"},
-                { url : 'url 1', titre : 'AAPL 2.2', "description": "desc AAPL 2.2"}
+                { link : 'link1', titre : 'AAPL 2.1', "description": "desc AAPL 2.1"},
+                { link : 'link1', titre : 'AAPL 2.2', "description": "desc AAPL 2.2"}
             ],
             time : '2018-02-27 16:10:00'
         },
@@ -65,8 +65,8 @@ const staticData = [
         data : {
             quote : { open : 110, high : 210, low : 100, close : 121.56, volume : 1000000 },
             news : [
-                { url : 'url 1', titre : 'FB 2.1', "description": "desc FB 2.1"},
-                { url : 'url 1', titre : 'FB 2.2', "description": "desc FB 2.2"}
+                { link : 'link1', titre : 'FB 2.1', "description": "desc FB 2.1"},
+                { link : 'link1', titre : 'FB 2.2', "description": "desc FB 2.2"}
             ],
             time : '2018-02-27 16:10:00'
         },
@@ -76,8 +76,8 @@ const staticData = [
         data : {
             quote : { open : 110, high : 210, low : 100, close : 119.64, volume : 1000000 },
             news : [
-                { url : 'url 1', titre : 'INTC 2.1', "description": "desc INTC 2.1"},
-                { url : 'url 1', titre : 'INTC 2.2', "description": "desc INTC 2.2"}
+                { link : 'link1', titre : 'INTC 2.1', "description": "desc INTC 2.1"},
+                { link : 'link1', titre : 'INTC 2.2', "description": "desc INTC 2.2"}
             ],
             time : '2018-02-27 16:10:00'
         },
@@ -87,14 +87,13 @@ const staticData = [
         data : {
             quote : { open : 110, high : 210, low : 100, close : 123.6, volume : 1000000 },
             news : [
-                { url : 'url 1', titre : 'IXIC 2.1', "description": "desc IXIC 2.1"},
-                { url : 'url 1', titre : 'IXIC 2.2', "description": "desc IXIC 2.2"}
+                { link : 'link1', titre : 'IXIC 2.1', "description": "desc IXIC 2.1"},
+                { link : 'link1', titre : 'IXIC 2.2', "description": "desc IXIC 2.2"}
             ],
             time : '2018-02-27 16:10:00'
         },
     },
     ],
-
 ];
 
 class KafkaConsumer
@@ -116,7 +115,7 @@ class KafkaConsumer
             });
         };
     
-        tmpFunction(0);
+        setTimeout(function (){ tmpFunction(1); }, 5000);
         setTimeout(function (){ tmpFunction(1); }, 20000);
 
         /*let i = 0;

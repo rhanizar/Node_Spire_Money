@@ -24,8 +24,13 @@ router.get('/symbols', (req, res) => {
 //Get company info by symbol
 router.get('/info', (req, res) => {
 	const symbol = req.query.symbol;
-    company = { name : `Company name of ${symbol}`, about : `About the company name of ${symbol}` };
-    res.send({ company : company });
+    Company.findBySymbol(symbol, (err, companies) => {
+            if (err)
+                    res.send(err);
+            res.json({company : companies[0]});
+    });
+    /*company = { name : `Company name of ${symbol}`, about : `About the company name of ${symbol}` };
+    res.send({ company : company });*/
 });
 
 //Get the company states
