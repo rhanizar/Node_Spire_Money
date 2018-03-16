@@ -1,4 +1,4 @@
-//Constants	
+// Constants	
 	const dbConfig = require('./config/database.config.js');
 	const express = require('express');
 	const mongoose = require('mongoose');
@@ -21,142 +21,133 @@
 	const ZOOKEEPER_HOST = 'localhost:2181';
 	const PARTITION = 0;
 
-//Express server manipulation
-	//Initialize the history
-	ServerHistoryKeeper.Init();
-	//Initialize the real time middleware
-	const realTimeMiddleware = new RealTimeMiddleware(app, PORT+1);
-	//Install sourcemap for mapping between js & jsx
-	sourceMapSupport.install();
+
+// Database connection
 	//Conect to MongoDB
-	mongoose.connect(dbConfig.url, {
-		//useMongoClient: true
-	});
+	mongoose.connect(dbConfig.url);
 	//Error handler for MongoDB connection
 	mongoose.connection.on('error', function() {
-	    console.log('Could not connect to the database. Exiting now...');
-	    process.exit();
+	    console.log('Could not connect to the database. Reconnecting...');
+	    //process.exit();
+	    mongoose.connect(dbConfig.url);
 	});
 	//Success connection handler
 	mongoose.connection.once('open', function() {
 	    console.log("Successfully connected to the database");
+	    mainServer();
 	});
-
-	//Setting up routes
-	app.use('/quote-per-minute', QuotePerMinuteRoutes);
-	app.use('/company', CompanyRoutes);
-	app.use('/news', NewsRoutes);
-	app.use('/user', UserRoutes);
-
-	// Route not found error
-	app.use((req, res, next) => {
-		const error = new Error('Not found');
-		error.status = 404;
-		next(error);
-	});
-
-	// Other routes errors
-	app.use((error, req, res, next) => {
-		res.status(error.status || 500);
-		res.json({
-			error : {
-				message : error.message
-			}
-		});
-	});
-
-//Kafka consumer manipulation
-	const onMsgKafka = function (message) {
-			/*console.log("message Kafka :");
-			console.log(message);*/
-			//const msg = message; // Just for test
-	    	const msg = JSON.parse(message.value);
-			//console.log("message Kafka [parsed] :");
-			//console.log(msg);
-	    	const formattedMessage = formatKafkaMsg(msg);
-	    	console.log("formattedMessage : ");
-	    	console.log(formattedMessage);
-	    	//const formattedMessage = msg.data;
-	    	ServerHistoryKeeper.newDataFromConsumer(msg.symbol, formattedMessage);
-	    	if (formattedMessage.news.length > 0){
-	    		realTimeMiddleware.sendNews(formattedMessage.news); // Broadcast
-	    		saveNewsToDB(msg.symbol, formattedMessage);
-	    	}
-
-	    	if (formattedMessage.quote.open){
-	    		//console.log("Sending quote : ");
-	    		//console.log(formattedMessage.quote)
-	    		realTimeMiddleware.sendQuote(msg.symbol, formattedMessage); // Multicast
-	    		realTimeMiddleware.sendStates(msg.symbol, ServerHistoryKeeper.fetchStates()); // Broadcast
-	    		saveQuoteToDB(msg.symbol, formattedMessage);
-	    	}
-	};
-
-	function formatKafkaMsg(msg)
+// Express server manipulation
+	function mainServer()
 	{
-		let result = msg.data;
-		let open = parseFloat( parseFloat(result.quote.open).toFixed(2));
-		let high = parseFloat( parseFloat(result.quote.high).toFixed(2));
-		let low = parseFloat( parseFloat(result.quote.low).toFixed(2));
-		let close = parseFloat( parseFloat(result.quote.close).toFixed(2));
-		let volume = parseFloat( parseFloat(result.quote.volume).toFixed(2));
-		result.quote = { open : open, high : high, low : low, close : close, volume : volume,  };
-		return result;
-	}
+		//Express server intialization
+			//Initialize the real time middleware
+			const realTimeMiddleware = new RealTimeMiddleware(app, PORT+1);
+			//Install sourcemap for mapping between js & jsx
+			sourceMapSupport.install();
+			//Initialize the history
+			ServerHistoryKeeper.Init();
+			//Setting up routes
+			app.use('/quote-per-minute', QuotePerMinuteRoutes);
+			app.use('/company', CompanyRoutes);
+			app.use('/news', NewsRoutes);
+			app.use('/user', UserRoutes);
 
-	const onErrorKafka = function (err) {
-	   	console.log('KafkaConsumer error :');
-	   	console.log(err);
-	};
+			// Route not found error
+			app.use((req, res, next) => {
+				const error = new Error('Not found');
+				error.status = 404;
+				next(error);
+			});
 
-	const 	kafkaConsumer = new KafkaConsumer(TOPIC_NAME, ZOOKEEPER_HOST, PARTITION, onMsgKafka, onErrorKafka);
+			// Other routes errors
+			app.use((error, req, res) => {
+				res.status(error.status || 500);
+				res.json({
+					error : {
+						message : error.message
+					}
+				});
+			});
 
-// Database middleware functions
-	function saveQuoteToDB(symbol, formattedMessage)
-	{
-		const Quote = new QuotePerMinute({
-	        "close"  : formattedMessage.quote.close, //THE VALUES YOU WANT TO INSERT
-	        "high"   : formattedMessage.quote.high,
-	        "low"    : formattedMessage.quote.low,
-	        "open"   : formattedMessage.quote.open,
-	        "volume" : formattedMessage.quote.volume,
-	        "minute" : formattedMessage.time,
-	        "symbol" : symbol,
-	    });
+		// Kafka consumer manipulation
+			const onMsgKafka = function (message) {
+					/*console.log("message Kafka :");
+					console.log(message);*/
+					//const msg = message; // Just for test
+			    	const msg = JSON.parse(message.value);
+					//console.log("message Kafka [parsed] :");
+					//console.log(msg);
+			    	const formattedMessage = formatKafkaMsg(msg);
+			    	console.log("formattedMessage : ");
+			    	console.log(formattedMessage);
+			    	//const formattedMessage = msg.data;
+			    	ServerHistoryKeeper.newDataFromConsumer(msg.symbol, formattedMessage);
+			    	if (formattedMessage.news.length > 0){
+			    		realTimeMiddleware.sendNews(formattedMessage.news); // Broadcast
+			    		saveNewsToDB(msg.symbol, formattedMessage);
+			    	}
 
-	    QuotePerMinute.saveQuotePerMinute(Quote);
-	}
-
-	function saveNewsToDB(symbol, formattedMessage)
-	{
-		const news = formattedMessage.news;
-		news.forEach((newsItem) => {
-			const item = {
-					time : formattedMessage.time, 
-					symbol : symbol, 
-					titre : newsItem.titre, 
-					link : newsItem.link 
+			    	if (formattedMessage.quote.open){
+			    		//console.log("Sending quote : ");
+			    		//console.log(formattedMessage.quote)
+			    		realTimeMiddleware.sendQuote(msg.symbol, formattedMessage); // Multicast
+			    		realTimeMiddleware.sendStates(msg.symbol, ServerHistoryKeeper.fetchStates()); // Broadcast
+			    		saveQuoteToDB(msg.symbol, formattedMessage);
+			    	}
 			};
 
-			News.saveNews(item);
-		});
+			function formatKafkaMsg(msg)
+			{
+				let result = msg.data;
+				let open = parseFloat( parseFloat(result.quote.open).toFixed(2));
+				let high = parseFloat( parseFloat(result.quote.high).toFixed(2));
+				let low = parseFloat( parseFloat(result.quote.low).toFixed(2));
+				let close = parseFloat( parseFloat(result.quote.close).toFixed(2));
+				let volume = parseFloat( parseFloat(result.quote.volume).toFixed(2));
+				result.quote = { open : open, high : high, low : low, close : close, volume : volume,  };
+				return result;
+			}
+
+			const onErrorKafka = function (err) {
+			   	console.log('KafkaConsumer error :');
+			   	console.log(err);
+			};
+
+			const kafkaConsumer = new KafkaConsumer(TOPIC_NAME, ZOOKEEPER_HOST, PARTITION, onMsgKafka, onErrorKafka);
+
+		// Database middleware functions
+			function saveQuoteToDB(symbol, formattedMessage)
+			{
+				const Quote = new QuotePerMinute({
+			        "close"  : formattedMessage.quote.close, //THE VALUES YOU WANT TO INSERT
+			        "high"   : formattedMessage.quote.high,
+			        "low"    : formattedMessage.quote.low,
+			        "open"   : formattedMessage.quote.open,
+			        "volume" : formattedMessage.quote.volume,
+			        "minute" : formattedMessage.time,
+			        "symbol" : symbol,
+			    });
+
+			    QuotePerMinute.saveQuotePerMinute(Quote);
+			}
+
+			function saveNewsToDB(symbol, formattedMessage)
+			{
+				const news = formattedMessage.news;
+				news.forEach((newsItem) => {
+					const item = {
+							time : formattedMessage.time, 
+							symbol : symbol, 
+							titre : newsItem.titre, 
+							link : newsItem.link 
+					};
+
+					News.saveNews(item);
+				});
+			}
+
+		// Listening for requests
+			app.listen(PORT, () => {
+			    console.log(`App listening on port ${PORT}`);
+			});
 	}
-//Listening for requests
-	app.listen(PORT, () => {
-	    console.log(`App listening on port ${PORT}`);
-	});
-
-//Tests
-/* let i = 0;
-let tabs = [];
-let data = ServerHistoryKeeper.fetchQuotes();
-
-ServerHistoryKeeper.fetchSymbols().forEach((element) => {
-	tabs[element.symbol] = 0;
-	setInterval(function(){
-		if (tabs[element.symbol] == data.length)
-			tabs[element.symbol] = 0;
-		realTimeMiddleware.sendQuote(element.symbol, data[tabs[element.symbol]]); // Multicast
-		tabs[element.symbol]++;
-	},3000);
-});*/

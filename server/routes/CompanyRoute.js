@@ -26,7 +26,7 @@ router.get('/info', (req, res) => {
 	const symbol = req.query.symbol;
     Company.findBySymbol(symbol, (err, companies) => {
             if (err)
-                    res.send(err);
+                res.send(err);
             res.json({company : companies[0]});
     });
     /*company = { name : `Company name of ${symbol}`, about : `About the company name of ${symbol}` };

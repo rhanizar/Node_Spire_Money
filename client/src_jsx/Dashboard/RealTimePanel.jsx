@@ -101,7 +101,7 @@ export default class RealTimePanel extends React.Component {
 
 	render(){
 		return (
-			<div className="panel panel-default">
+			<div className="panel panel-info">
 				<div className="panel-heading">
 					Stock time series data : <label>{this.props.symbol}</label>
 					<span className="pull-right clickable panel-toggle panel-button-tab-left"><em className="fa fa-toggle-up"></em></span>

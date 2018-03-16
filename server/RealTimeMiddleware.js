@@ -32,20 +32,18 @@ class RealTimeMiddleware
 	}
 
 	sendNews(news){
-		this.io.emit(NEW_NEWS_EVENT, news);
+		this.io.emit(NEW_NEWS_EVENT, news); // broadcast
 	}
 
 	sendQuote(symbol, quote)
 	{
-		//this.io.sockets.in(room).emit(NEW_QUOTE_EVENT, `${quote} - Hello ${symbol}`);
-		//this.io.to(symbol).emit(NEW_QUOTE_EVENT, `${quote} - Hello ${symbol}`);
-		this.io.to(symbol).emit(NEW_QUOTE_EVENT, quote);
+		this.io.to(symbol).emit(NEW_QUOTE_EVENT, quote); // multicast
 	}
 
 	sendStates(symbol, states)
 	{
 		const obj = { symbol : symbol, state : states[symbol]};
-		this.io.emit(NEW_STATES_EVENT, obj);	
+		this.io.emit(NEW_STATES_EVENT, obj); // broadcast
 	}
 }
 

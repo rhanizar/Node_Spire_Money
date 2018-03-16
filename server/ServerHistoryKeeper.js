@@ -304,24 +304,20 @@ class ServerHistoryKeeper
 	{
 		Company.findAll( (err, companies) => {
 			Symbols = companies;
-			if (QuoteHistory == null){
-				QuoteHistory = {};
-				Symbols.forEach((element) => {
-					QuoteHistory[element.symbol] = [];
-				});
-			}
+			QuoteHistory = {};
+			Symbols.forEach((element) => {
+				QuoteHistory[element.symbol] = [];
+			});
 
-			if(StatesHistory == null){
-				StatesHistory = {};
-				Symbols.forEach((element) => {
-					StatesHistory[element.symbol] = { volume : 0, price : 0, difference : 0 };
-				});
-			}
+			StatesHistory = {};
+			Symbols.forEach((element) => {
+				StatesHistory[element.symbol] = { volume : 0, price : 0, difference : 0 };
+			});
 		});
 
 		News.findLatest( (err, news) => {
-				if (!err)
-					NewsHistory = news;
+			if (!err)
+				NewsHistory = news;
 		});
 	}
 

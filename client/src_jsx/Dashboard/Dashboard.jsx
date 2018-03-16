@@ -4,6 +4,9 @@ import CompaniesPanel from './CompaniesPanel';
 import NewsPanel from './NewsPanel';
 import RealTimePanel from './RealTimePanel';
 import AboutCompany from './AboutCompany';
+import PredictionsHistory from './PredictionsHistory';
+import Recommendations from './Recommendations';
+import Predictions from './Predictions';
 import TabContentHeader from '../TabContentHeader';
 import PropTypes from 'prop-types';
 import LoadScript  from 'load-script';
@@ -167,6 +170,22 @@ export default class Dashboard extends React.Component{
 						<RealTimePanel symbol={this.props.symbol} data={this.quoteData} socket={this.socket}/>
 					</div>
 				</div>
+				{/*<div className="row">
+					<div className="col-md-12">
+						<Recommendations />
+					</div>
+				</div>
+				
+
+				<div className="row">
+					<div className="col-md-6">
+						<Predictions />
+					</div>
+
+					<div className="col-md-6">
+						<PredictionsHistory />
+					</div>
+				</div>*/}
 
 				<div className="row">
 					<div className="col-md-12">

@@ -93,6 +93,13 @@
 	font-weight: bold;
 }
 
+.dataSeriesChart2{
+	display: inline-block;
+    vertical-align: baseline;
+    min-height: 331px;
+    width: 100%;
+}
+
 .dataSeriesChart{
 	display: inline-block;
     vertical-align: baseline;

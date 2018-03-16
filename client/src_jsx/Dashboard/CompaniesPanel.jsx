@@ -59,6 +59,9 @@ export default class CompaniesPanel extends React.Component {
 
 	newStateEventHandler(msg)
 	{
+		console.log('msg : ');
+		console.log(msg);
+		
 		const index = this.indexes[msg.symbol];
 		const tab = this.GlobalTab[index.line];
 		tab[index.column].state = msg.state;
