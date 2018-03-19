@@ -14,7 +14,7 @@ export default class NavBar extends React.Component{
 							<span className="icon-bar"></span>
 						</button>
 						<a className="navbar-brand" href="#">
-							<span>SPire</span> Money
+							<span>Spire</span> Money
 						</a>
 					</div>
 				</div>

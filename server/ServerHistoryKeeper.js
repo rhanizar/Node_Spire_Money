@@ -251,7 +251,7 @@ const News = require('./models/News');
 				low : 90,
 				close : 110,
 			},
-			news : staticNews,
+			news : [],
 			time : "2018-03-11 09:59:00"
 		},
 		{
@@ -261,7 +261,7 @@ const News = require('./models/News');
 				low : 101,
 				close : 120,
 			},
-			news : staticNews,
+			news : [],
 			time : "2018-03-11 10:00:00"
 		},
 		{
@@ -271,7 +271,7 @@ const News = require('./models/News');
 				low : 33,
 				close : 50,
 			},
-			news : staticNews,
+			news : [],
 			time : "2018-03-11 10:01:00"
 		}
 	];
@@ -380,6 +380,7 @@ class ServerHistoryKeeper
 
 	static fetchQuotes(symbol){
 		return QuoteHistory[symbol];
+		//return data;
 	}
 
 	static fetchSymbols()

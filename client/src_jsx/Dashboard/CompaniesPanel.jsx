@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import CompanyState from './CompanyState';
 import PropTypes from 'prop-types';
 import { CSSTransitionGroup } from 'react-transition-group';
-
+ 
 const NEW_STATES_EVENT = 'NEW_STATES_EVENT';
 
 export default class CompaniesPanel extends React.Component {
@@ -74,9 +74,20 @@ export default class CompaniesPanel extends React.Component {
 	}
 
 	render(){
-		const companies = this.companies;
-		let i = 0;
+		//const companies = this.companies;
+		
 		const content = [];
+
+		let i = 0;
+		/*this.GlobalTab.forEach((set) => {
+			let items = set.map((element) => {
+				return (<CompanyState ref={element.symbol} symbol={element.symbol} volume={element.state.volume}
+					 price={element.state.price} difference={element.state.difference} key={element.symbol} />);
+			});
+			content[i] = (<div key={i}>{items}</div>);
+			i++;
+		});*/
+
 		this.GlobalTab[this.state.currentIndex].forEach((element) => {
 			content[i] = (<CompanyState ref={element.symbol} symbol={element.symbol} volume={element.state.volume}
 					 price={element.state. 	price} difference={element.state.difference} key={element.symbol} />);
@@ -99,7 +110,12 @@ export default class CompaniesPanel extends React.Component {
 		return (
 			<div className="panel panel-container">
 				<div className="row statesPanel">
-			          	{content}
+					<CSSTransitionGroup
+				          transitionName="example"
+				          transitionEnterTimeout={500}
+				          transitionLeaveTimeout={0}>
+						{content}
+			         </CSSTransitionGroup>
 				</div>
 			</div>
 		);

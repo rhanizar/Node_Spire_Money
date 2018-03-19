@@ -24,18 +24,34 @@
 
 // Database connection
 	//Conect to MongoDB
-	mongoose.connect(dbConfig.url);
+	const options = { autoReconnect : true, reconnectTries: Number.MAX_VALUE, reconnectInterval: 500};
+	const connectWithRetry = () => {
+		mongoose.connect(dbConfig.url, options).then(
+			() => {
+				console.log("Successfully connected to the database");
+		    	mainServer();
+			},
+			(err) => {
+				console.log('Could not connect to the database. Reconnecting...');
+				mongoose.disconnect();
+				setTimeout(connectWithRetry, 500);
+			}
+		);
+	};
+
+	connectWithRetry();
 	//Error handler for MongoDB connection
-	mongoose.connection.on('error', function() {
+	/*mongoose.connection.on('error', function() {
 	    console.log('Could not connect to the database. Reconnecting...');
 	    //process.exit();
-	    mongoose.connect(dbConfig.url);
+	    //mongoose.connect(dbConfig.url);
 	});
 	//Success connection handler
 	mongoose.connection.once('open', function() {
 	    console.log("Successfully connected to the database");
 	    mainServer();
 	});
+	*/
 // Express server manipulation
 	function mainServer()
 	{

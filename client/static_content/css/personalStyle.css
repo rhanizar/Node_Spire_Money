@@ -165,7 +165,23 @@
     -webkit-transition: height .3s ease;
 }
 
-.statesPanel
-{
+.statesPanel{
 	min-height: 100px;
+}
+
+.buy{
+	color: rgb(61, 148, 0)
+}
+
+.sell{
+	color: rgb(255, 0, 0);
+}
+
+.symbolRecommand{
+	color: rgb(8,9,188);
+}
+
+.buy, .sell, .symbolRecommand{
+
+	font-weight: bold;
 }

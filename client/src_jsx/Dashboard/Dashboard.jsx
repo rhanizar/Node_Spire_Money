@@ -167,15 +167,15 @@ export default class Dashboard extends React.Component{
 
 				<div className="row">
 					<div className="col-md-12">
-						<RealTimePanel symbol={this.props.symbol} data={this.quoteData} socket={this.socket}/>
-					</div>
-				</div>
-				{/*<div className="row">
-					<div className="col-md-12">
 						<Recommendations />
 					</div>
 				</div>
-				
+
+				<div className="row">
+					<div className="col-md-12">
+						<RealTimePanel symbol={this.props.symbol} data={this.quoteData} socket={this.socket}/>
+					</div>
+				</div>
 
 				<div className="row">
 					<div className="col-md-6">
@@ -185,7 +185,7 @@ export default class Dashboard extends React.Component{
 					<div className="col-md-6">
 						<PredictionsHistory />
 					</div>
-				</div>*/}
+				</div>
 
 				<div className="row">
 					<div className="col-md-12">
