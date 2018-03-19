@@ -94,8 +94,8 @@
 					//console.log("message Kafka [parsed] :");
 					//console.log(msg);
 			    	const formattedMessage = formatKafkaMsg(msg);
-			    	console.log("formattedMessage : ");
-			    	console.log(formattedMessage);
+			    	//console.log("formattedMessage : ");
+			    	//console.log(formattedMessage);
 			    	//const formattedMessage = msg.data;
 			    	ServerHistoryKeeper.newDataFromConsumer(msg.symbol, formattedMessage);
 			    	if (formattedMessage.news.length > 0){
@@ -134,6 +134,8 @@
 		// Database middleware functions
 			function saveQuoteToDB(symbol, formattedMessage)
 			{
+				console.log("Save new Quote : ");
+				console.log(formattedMessage.quote);
 				const Quote = new QuotePerMinute({
 			        "close"  : formattedMessage.quote.close, //THE VALUES YOU WANT TO INSERT
 			        "high"   : formattedMessage.quote.high,

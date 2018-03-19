@@ -13,6 +13,7 @@
 //Import mongoose schema
 const Company = require('./models/Company');
 const News = require('./models/News');
+const QuotePerMinute = require('./models/QuotePerMinute');
 
 /***************** Static data ************/
 	function getRandomInt(min, max) {
@@ -277,7 +278,7 @@ const News = require('./models/News');
 	];
 /*****************************************/
 
-const MAX_QUOTES_HISTORY_PER_SYMBOL = 5;
+const MAX_QUOTES_HISTORY_PER_SYMBOL = 300;
 const MAX_NEWS_HISTORY = 5;
 
 /* QuoteHistory = { 
@@ -307,6 +308,11 @@ class ServerHistoryKeeper
 			QuoteHistory = {};
 			Symbols.forEach((element) => {
 				QuoteHistory[element.symbol] = [];
+				QuotePerMinute.findLatest(element.symbol, MAX_QUOTES_HISTORY_PER_SYMBOL, (result) => {
+			        console.log(JSON.stringify(result));
+			        console.log("Init :");
+			        QuoteHistory[element.symbol] = result[element.symbol];
+			    });
 			});
 
 			StatesHistory = {};

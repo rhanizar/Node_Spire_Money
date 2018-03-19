@@ -10,7 +10,6 @@ export default class CompaniesPanel extends React.Component {
 	constructor(props)
 	{
 		super(props);
-
 		this.companies = this.props.companies;
 
 		let i = 0, total = 0;
@@ -65,7 +64,9 @@ export default class CompaniesPanel extends React.Component {
 		const index = this.indexes[msg.symbol];
 		const tab = this.GlobalTab[index.line];
 		tab[index.column].state = msg.state;
-		const child = this.refs[msg.symbol];
+		console.log('this.refs');
+		console.log(this.refs);
+		const child = this.refs["transitionGroup"].refs[msg.symbol];
 		child.forceUpdate();
 	}
 
@@ -113,7 +114,8 @@ export default class CompaniesPanel extends React.Component {
 					<CSSTransitionGroup
 				          transitionName="example"
 				          transitionEnterTimeout={500}
-				          transitionLeaveTimeout={0}>
+				          transitionLeaveTimeout={0}
+				          ref="transitionGroup">
 						{content}
 			         </CSSTransitionGroup>
 				</div>
