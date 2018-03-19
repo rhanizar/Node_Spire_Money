@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { CSSTransitionGroup } from 'react-transition-group';
  
 const NEW_STATES_EVENT = 'NEW_STATES_EVENT';
+let stateEventHandler;
 
 export default class CompaniesPanel extends React.Component {
 	constructor(props)
@@ -40,10 +41,12 @@ export default class CompaniesPanel extends React.Component {
 
 
 		this.newStateEventHandler = this.newStateEventHandler.bind(this);
-		
+		stateEventHandler = this.newStateEventHandler;
+
 		this.props.socket.on(NEW_STATES_EVENT, function(msg){
-		    me.newStateEventHandler(msg);
+		    stateEventHandler(msg);
 		});
+
 		this.changeIndex = this.changeIndex.bind(this);
 		this.timerID = setInterval(this.changeIndex, 3000);
 	}
@@ -64,10 +67,7 @@ export default class CompaniesPanel extends React.Component {
 		const index = this.indexes[msg.symbol];
 		const tab = this.GlobalTab[index.line];
 		tab[index.column].state = msg.state;
-		console.log('this.refs');
-		console.log(this.refs);
-		const child = this.refs["transitionGroup"].refs[msg.symbol];
-		child.forceUpdate();
+		this.forceUpdate();
 	}
 
 	componentWillUnmount() {
@@ -76,7 +76,9 @@ export default class CompaniesPanel extends React.Component {
 
 	render(){
 		//const companies = this.companies;
-		
+		/*console.log('this.refs');
+		console.log(this.refs["AAPL"]);
+		/*console.log(this.refs);*/
 		const content = [];
 
 		let i = 0;
@@ -111,13 +113,13 @@ export default class CompaniesPanel extends React.Component {
 		return (
 			<div className="panel panel-container">
 				<div className="row statesPanel">
-					<CSSTransitionGroup
+					{/*<CSSTransitionGroup
 				          transitionName="example"
 				          transitionEnterTimeout={500}
 				          transitionLeaveTimeout={0}
-				          ref="transitionGroup">
+				          ref="transitionGroup">*/}
 						{content}
-			         </CSSTransitionGroup>
+			         {/*</CSSTransitionGroup>*/}
 				</div>
 			</div>
 		);

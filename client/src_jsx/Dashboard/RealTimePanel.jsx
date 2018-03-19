@@ -116,10 +116,10 @@ export default class RealTimePanel extends React.Component {
 								       <CartesianGrid strokeDasharray="3 3"/>
 								       <Tooltip />
 								       <Legend />
-								       <Line type="monotone" dataKey="close" stroke={CLOSE_COLOR} activeDot={{r: 8}} isAnimationActive={true} animationEasing={'linear'} animationDuration={1000}/>
-								       <Line type="monotone" dataKey="high" stroke={HIGH_COLOR} activeDot={{r: 8}} isAnimationActive={true} animationEasing={'linear'} animationDuration={1000}/>
-								       <Line type="monotone" dataKey="low" stroke={LOW_COLOR} activeDot={{r: 8}} isAnimationActive={true} animationEasing={'linear'} animationDuration={1000}/>
-								       <Line type="monotone" dataKey="open" stroke={OPEN_COLOR} activeDot={{r: 8}} isAnimationActive={true} animationEasing={'linear'} animationDuration={1000}/>
+								       <Line type="monotone" dataKey="close" stroke={CLOSE_COLOR} dot={false} activeDot={{r: 8}} isAnimationActive={true} animationEasing={'linear'} animationDuration={1000}/>
+								       <Line type="monotone" dataKey="high" stroke={HIGH_COLOR}  dot={false} activeDot={{r: 8}} isAnimationActive={true} animationEasing={'linear'} animationDuration={1000}/>
+								       <Line type="monotone" dataKey="low" stroke={LOW_COLOR}  dot={false} activeDot={{r: 8}} isAnimationActive={true} animationEasing={'linear'} animationDuration={1000}/>
+								       <Line type="monotone" dataKey="open" stroke={OPEN_COLOR}  dot={false} activeDot={{r: 8}} isAnimationActive={true} animationEasing={'linear'} animationDuration={1000}/>
 
 							    </LineChart>
 							</ResponsiveContainer>
