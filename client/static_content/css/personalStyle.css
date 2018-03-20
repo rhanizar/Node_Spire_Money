@@ -169,11 +169,11 @@
 	min-height: 100px;
 }
 
-.buy{
+.Buy{
 	color: rgb(61, 148, 0)
 }
 
-.sell{
+.Sell{
 	color: rgb(255, 0, 0);
 }
 
@@ -181,7 +181,7 @@
 	color: rgb(8,9,188);
 }
 
-.buy, .sell, .symbolRecommand{
+.Buy, .Sell, .symbolRecommand{
 
 	font-weight: bold;
 }

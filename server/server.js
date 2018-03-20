@@ -134,8 +134,6 @@
 		// Database middleware functions
 			function saveQuoteToDB(symbol, formattedMessage)
 			{
-				console.log("Save new Quote : ");
-				console.log(formattedMessage.quote);
 				const Quote = new QuotePerMinute({
 			        "close"  : formattedMessage.quote.close, //THE VALUES YOU WANT TO INSERT
 			        "high"   : formattedMessage.quote.high,

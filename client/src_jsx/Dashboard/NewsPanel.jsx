@@ -14,7 +14,7 @@ const NewsItem = (props) => {
 		               	</span>
 	               	</li>
 	            </div>);
-		}
+		};
 
 export default class NewsPanel extends React.Component {
 	constructor(props)

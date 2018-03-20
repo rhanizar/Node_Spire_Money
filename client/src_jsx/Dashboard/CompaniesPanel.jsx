@@ -93,7 +93,7 @@ export default class CompaniesPanel extends React.Component {
 
 		this.GlobalTab[this.state.currentIndex].forEach((element) => {
 			content[i] = (<CompanyState ref={element.symbol} symbol={element.symbol} volume={element.state.volume}
-					 price={element.state. 	price} difference={element.state.difference} key={element.symbol} />);
+					 price={element.state.price} difference={element.state.difference} key={element.symbol} />);
 			i++;
 		});
 /*
@@ -113,13 +113,12 @@ export default class CompaniesPanel extends React.Component {
 		return (
 			<div className="panel panel-container">
 				<div className="row statesPanel">
-					{/*<CSSTransitionGroup
+					<CSSTransitionGroup
 				          transitionName="example"
 				          transitionEnterTimeout={500}
-				          transitionLeaveTimeout={0}
-				          ref="transitionGroup">*/}
+				          transitionLeaveTimeout={0}>
 						{content}
-			         {/*</CSSTransitionGroup>*/}
+			         </CSSTransitionGroup>
 				</div>
 			</div>
 		);

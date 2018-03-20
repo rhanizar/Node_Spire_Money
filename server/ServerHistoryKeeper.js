@@ -309,8 +309,6 @@ class ServerHistoryKeeper
 			Symbols.forEach((element) => {
 				QuoteHistory[element.symbol] = [];
 				QuotePerMinute.findLatest(element.symbol, MAX_QUOTES_HISTORY_PER_SYMBOL, (result) => {
-			        console.log(JSON.stringify(result));
-			        console.log("Init :");
 			        QuoteHistory[element.symbol] = result[element.symbol];
 			    });
 			});
