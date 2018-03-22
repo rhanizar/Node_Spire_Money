@@ -179,11 +179,11 @@ export default class Dashboard extends React.Component{
 
 				<div className="row">
 					<div className="col-md-6">
-						<Predictions />
+						<Predictions symbol={this.props.symbol}/>
 					</div>
 
 					<div className="col-md-6">
-						<PredictionsHistory />
+						<PredictionsHistory symbol={this.props.symbol}/>
 					</div>
 				</div>
 

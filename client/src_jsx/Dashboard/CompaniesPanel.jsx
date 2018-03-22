@@ -113,12 +113,12 @@ export default class CompaniesPanel extends React.Component {
 		return (
 			<div className="panel panel-container">
 				<div className="row statesPanel">
-					<CSSTransitionGroup
+					{/*<CSSTransitionGroup
 				          transitionName="example"
 				          transitionEnterTimeout={500}
-				          transitionLeaveTimeout={0}>
+				          transitionLeaveTimeout={0}>*/}
 						{content}
-			         </CSSTransitionGroup>
+			         {/*</CSSTransitionGroup>*/}
 				</div>
 			</div>
 		);
