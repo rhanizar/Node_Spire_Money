@@ -61,7 +61,8 @@ export default class RealTimePanel extends React.Component {
 		let dataFormatted = props.data.map((element) => {
 			return this.formatQuote(element);
 		});
-		return ({dataFormatted : dataFormatted });
+
+		return ({ dataFormatted : dataFormatted });
 	}
 
 	newQuoteEventHandler(msg)
@@ -84,7 +85,7 @@ export default class RealTimePanel extends React.Component {
 		return content;
 	}
 
-	handleClick(e) {
+	handleClick(e){
 	  let news = e.activePayload[0].payload.news;
 	  if (news.length > 0)
 	  	window.open(news[0].link,'_blank');

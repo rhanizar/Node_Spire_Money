@@ -75,7 +75,6 @@ class App extends React.Component{
   handleChangeLocation(newActiveItem){
     if (newActiveItem)
      this.setState({activeItem : newActiveItem, selectedSymbol : this.state.selectedSymbol});
-    
   }
 
   dataIsComplete()

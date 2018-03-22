@@ -7,6 +7,7 @@
 	const QuotePerMinute = require('./models/QuotePerMinute');
 	const CompanyRoutes = require('./routes/CompanyRoute');
 	const NewsRoutes = require('./routes/NewsRoute');
+	const PredictionsRoutes = require('./routes/PredictionsRoute');
 	const News = require('./models/News');
 	const UserRoutes = require('./routes/UserRoute');
 	const RealTimeMiddleware = require('./RealTimeMiddleware');
@@ -40,18 +41,7 @@
 	};
 
 	connectWithRetry();
-	//Error handler for MongoDB connection
-	/*mongoose.connection.on('error', function() {
-	    console.log('Could not connect to the database. Reconnecting...');
-	    //process.exit();
-	    //mongoose.connect(dbConfig.url);
-	});
-	//Success connection handler
-	mongoose.connection.once('open', function() {
-	    console.log("Successfully connected to the database");
-	    mainServer();
-	});
-	*/
+
 // Express server manipulation
 	function mainServer()
 	{
@@ -67,6 +57,7 @@
 			app.use('/company', CompanyRoutes);
 			app.use('/news', NewsRoutes);
 			app.use('/user', UserRoutes);
+			app.use('/predictions', PredictionsRoutes);
 
 			// Route not found error
 			app.use((req, res, next) => {
