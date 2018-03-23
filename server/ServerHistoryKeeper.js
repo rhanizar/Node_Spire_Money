@@ -10,10 +10,12 @@
 		- Si (la donnée n'existe pas dans l'historique) alors attaquer le DAO pour le trouver
 */
 
-//Import mongoose schema
+//Models
 const Company = require('./models/Company');
 const News = require('./models/News');
 const QuotePerMinute = require('./models/QuotePerMinute');
+//Controllers
+const ScheduleWorkDispatcher = require("./controllers/ScheduleWorkDispatcher");
 
 /***************** Static data ************/
 	function getRandomInt(min, max) {
@@ -317,6 +319,8 @@ class ServerHistoryKeeper
 			Symbols.forEach((element) => {
 				StatesHistory[element.symbol] = { volume : 0, price : 0, difference : 0 };
 			});
+			ScheduleWorkDispatcher.main(Symbols, new Date());
+
 		});
 
 		News.findLatest( (err, news) => {

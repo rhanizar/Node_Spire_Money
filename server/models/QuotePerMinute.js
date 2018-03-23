@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const News = require('../models/News');
 const QuotePerMinuteSchema = mongoose.Schema({
 	close : Number,
 	high : Number,
@@ -10,16 +10,19 @@ const QuotePerMinuteSchema = mongoose.Schema({
 	volume : Number
 }, {
     versionKey: false 
-}); 
+});
+
 // save to db
 QuotePerMinuteSchema.statics.saveQuotePerMinute = function(data, callback){
     var quote = new this(data);
     quote.save(callback);
 };
+
 //search for a symbol 
 QuotePerMinuteSchema.statics.findAllBySymbol = function  (sym, callback) {
     this.find({ symbol: sym }, 'volume symbol open minute low close high -_id', callback);
 };
+
 //Find all quotes per minute 
 QuotePerMinuteSchema.statics.findAll = function (callback){
     this.find({}, '-_id', callback).sort('-symbol');
@@ -32,21 +35,23 @@ QuotePerMinuteSchema.statics.findLatest = function (sym, limit, callback){
 			result = [];
 			let i = 0, cpt = 0;
 			let indexes = {};
-			for(var item in quotes){
-				var quote = quotes[item];
-				const News = require('../models/News');
-				const obj = { "quote" : {
+			let quote, key, obj;
+			for(let item in quotes){
+				quote = quotes[item];
+				obj = { "quote" : {
 								"open" : quote.open,
 								"high" : quote.high,
 								"low" : quote.low,
 								"close" : quote.close,
 								"volume" : quote.volume,
 								"_id" : quote._id
-							}, "news" : [], "time" : quote.minute
-						};
+							},
+						"news" : [],
+						"time" : quote.minute
+				};
 
 				result.push(obj);
-				let key = new Date(quote.minute);
+				key = new Date(quote.minute);
 				indexes[key] = i;
 				News.find({'time': quote.minute, 'symbol': sym}, '-_id -symbol', (er, news) => {
 					if(!er){

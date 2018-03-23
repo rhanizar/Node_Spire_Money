@@ -1,20 +1,26 @@
 // Constants	
+	//Modules
 	const dbConfig = require('./config/database.config.js');
 	const express = require('express');
 	const mongoose = require('mongoose');
 	const sourceMapSupport = require('source-map-support');
+	//Routes
 	const QuotePerMinuteRoutes = require('./routes/QuotePerMinuteRoute');
-	const QuotePerMinute = require('./models/QuotePerMinute');
+	const UserRoutes = require('./routes/UserRoute');
 	const CompanyRoutes = require('./routes/CompanyRoute');
 	const NewsRoutes = require('./routes/NewsRoute');
 	const PredictionsRoutes = require('./routes/PredictionsRoute');
+	const RecommendationsRoutes = require('./routes/RecommendationsRoute');
+	//Models
+	const QuotePerMinute = require('./models/QuotePerMinute');
 	const News = require('./models/News');
-	const UserRoutes = require('./routes/UserRoute');
+
+	//Service classes
 	const RealTimeMiddleware = require('./RealTimeMiddleware');
 	const KafkaConsumer = require('./KafkaConsumer');
 	const ServerHistoryKeeper = require('./ServerHistoryKeeper');
-	//const bodyParser  = require('body-parser');
 
+	//Server elements
 	const app = express();
 	const PORT = process.env.PORT || 3000;
 
@@ -58,6 +64,7 @@
 			app.use('/news', NewsRoutes);
 			app.use('/user', UserRoutes);
 			app.use('/predictions', PredictionsRoutes);
+			app.use('/recommendations', RecommendationsRoutes)
 
 			// Route not found error
 			app.use((req, res, next) => {
