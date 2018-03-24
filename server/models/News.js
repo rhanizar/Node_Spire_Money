@@ -30,4 +30,5 @@ NewsSchema.statics.findAll = function (start, end, callback){
 NewsSchema.statics.findLatest = function (callback){
     this.find({}, 'time symbol titre link -_id').sort({'time': -1}).limit(30).exec(callback);;
 }
+
 module.exports = mongoose.model('News', NewsSchema);

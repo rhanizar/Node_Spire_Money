@@ -150,7 +150,12 @@ export default class Dashboard extends React.Component{
 
 	render(){
 		if (this.dataIsComplete() == false)
-			return null;
+			return (
+				<div class="loader-container">
+					<div class="loader"></div>
+				</div>
+			);
+		
 		return (
 			<div>
 				<TabContentHeader title="Dashboard" />

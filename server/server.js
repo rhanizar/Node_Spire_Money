@@ -4,6 +4,7 @@
 	const express = require('express');
 	const mongoose = require('mongoose');
 	const sourceMapSupport = require('source-map-support');
+	const schedule = require('node-schedule');
 	//Routes
 	const QuotePerMinuteRoutes = require('./routes/QuotePerMinuteRoute');
 	const UserRoutes = require('./routes/UserRoute');
@@ -14,7 +15,8 @@
 	//Models
 	const QuotePerMinute = require('./models/QuotePerMinute');
 	const News = require('./models/News');
-
+	//Controllers
+	const ScheduleWorkDispatcher = require("./controllers/ScheduleWorkDispatcher");
 	//Service classes
 	const RealTimeMiddleware = require('./RealTimeMiddleware');
 	const KafkaConsumer = require('./KafkaConsumer');
@@ -57,7 +59,7 @@
 			//Install sourcemap for mapping between js & jsx
 			sourceMapSupport.install();
 			//Initialize the history
-			ServerHistoryKeeper.Init();
+			ServerHistoryKeeper.Init(InitSchedule);
 			//Setting up routes
 			app.use('/quote-per-minute', QuotePerMinuteRoutes);
 			app.use('/company', CompanyRoutes);
@@ -165,3 +167,19 @@
 			    console.log(`App listening on port ${PORT}`);
 			});
 	}
+
+function InitSchedule(symbols){
+	ScheduleWorkDispatcher.main(symbols, new Date());
+	//Schedule tasks
+	let rule = new schedule.RecurrenceRule();
+	rule.dayOfWeek = [new schedule.Range(1, 4)];
+	rule.hour = 20;
+	rule.minute = 30;
+	//rule.second = 15;
+	let job = schedule.scheduleJob(rule, function(){
+	  //ScheduleWorkDispatcher.main(symbols, new Date());
+	  let date = new Date().toISOString();
+	  console.log('Hello : '+date)
+	});
+}
+	

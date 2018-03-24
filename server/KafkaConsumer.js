@@ -108,7 +108,7 @@ class KafkaConsumer
         this.consumer.on('error', onErrorCallback);
         this.consumer.on('message', onMsgCallback);
 
-       /* const tmpFunction = (i) => {
+       /*const tmpFunction = (i) => {
             staticData[i].forEach((element) => {
                 let obj = { value : JSON.stringify(element) };
                 onMsgCallback(obj);
@@ -117,8 +117,8 @@ class KafkaConsumer
     
         setTimeout(function (){ tmpFunction(0); }, 5000);
         setTimeout(function (){ tmpFunction(1); }, 20000);
-
-        /*let i = 0;
+        
+        let i = 0;
         setInterval(function(){
             if (i == staticData.length)
                 i = 0;

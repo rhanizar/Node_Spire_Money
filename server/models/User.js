@@ -1,10 +1,18 @@
 const mongoose = require('mongoose');
 
 const UserSchema = mongoose.Schema({
-    username : String,
-    password : String,
-    name : String,
-    email : String
+    username : { type : String, required : true, unique : true },
+    password : { type : String, required : true },
+    name : { type : String, required : true },
+    email : { 
+        type : String, 
+        //cannot be created without
+        required : true, 
+        //optimises search, it knows that there is one document
+        unique : true, 
+        //use valid email
+        match : /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
+    }
 }, {
     versionKey: false 
 });

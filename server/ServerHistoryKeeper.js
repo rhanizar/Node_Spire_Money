@@ -14,8 +14,6 @@
 const Company = require('./models/Company');
 const News = require('./models/News');
 const QuotePerMinute = require('./models/QuotePerMinute');
-//Controllers
-const ScheduleWorkDispatcher = require("./controllers/ScheduleWorkDispatcher");
 
 /***************** Static data ************/
 	function getRandomInt(min, max) {
@@ -303,10 +301,11 @@ let NewsHistory = [];
 
 class ServerHistoryKeeper 
 {
-	static Init()
+	static Init(symbolsInitCallback)
 	{
 		Company.findAll( (err, companies) => {
 			Symbols = companies;
+			symbolsInitCallback(Symbols);
 			QuoteHistory = {};
 			Symbols.forEach((element) => {
 				QuoteHistory[element.symbol] = [];
@@ -319,8 +318,8 @@ class ServerHistoryKeeper
 			Symbols.forEach((element) => {
 				StatesHistory[element.symbol] = { volume : 0, price : 0, difference : 0 };
 			});
-			ScheduleWorkDispatcher.main(Symbols, new Date());
 
+			//ScheduleWorkDispatcher.main(symbols, new Date());
 		});
 
 		News.findLatest( (err, news) => {
