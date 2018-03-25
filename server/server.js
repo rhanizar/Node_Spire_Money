@@ -56,6 +56,158 @@
 		//Express server intialization
 			//Initialize the real time middleware
 			const realTimeMiddleware = new RealTimeMiddleware(app, PORT+1);
+			var obj = {
+						"symbol" : "AAPL",
+						"data" : [
+						{
+							"open" : 109.1,
+							"high" : 109.1,
+							"close" : 109.1,
+							"low" : 109.1,
+							"volume" : 109.1
+						},
+						{
+							"open" : 109.1,
+							"high" : 109.1,
+							"close" : 109.1,
+							"low" : 109.1,
+							"volume" : 109.1
+						},
+						{
+							"open" : 109.1,
+							"high" : 109.1,
+							"close" : 109.1,
+							"low" : 109.1,
+							"volume" : 109.1
+						},
+						{
+							"open" : 109.1,
+							"high" : 109.1,
+							"close" : 109.1,
+							"low" : 109.1,
+							"volume" : 109.1
+						},
+						{
+							"open" : 109.1,
+							"high" : 109.1,
+							"close" : 109.1,
+							"low" : 109.1,
+							"volume" : 109.1
+						},
+						{
+							"open" : 109.1,
+							"high" : 109.1,
+							"close" : 109.1,
+							"low" : 109.1,
+							"volume" : 109.1
+						},
+						{
+							"open" : 109.1,
+							"high" : 109.1,
+							"close" : 109.1,
+							"low" : 109.1,
+							"volume" : 109.1
+						},
+						{
+							"open" : 109.1,
+							"high" : 109.1,
+							"close" : 109.1,
+							"low" : 109.1,
+							"volume" : 109.1
+						},
+						{
+							"open" : 109.1,
+							"high" : 109.1,
+							"close" : 109.1,
+							"low" : 109.1,
+							"volume" : 109.1
+						},
+						{
+							"open" : 109.1,
+							"high" : 109.1,
+							"close" : 109.1,
+							"low" : 109.1,
+							"volume" : 109.1
+						},
+						{
+							"open" : 109.1,
+							"high" : 109.1,
+							"close" : 109.1,
+							"low" : 109.1,
+							"volume" : 109.1
+						},
+						{
+							"open" : 109.1,
+							"high" : 109.1,
+							"close" : 109.1,
+							"low" : 109.1,
+							"volume" : 109.1
+						},
+						{
+							"open" : 109.1,
+							"high" : 109.1,
+							"close" : 109.1,
+							"low" : 109.1,
+							"volume" : 109.1
+						},
+						{
+							"open" : 109.1,
+							"high" : 109.1,
+							"close" : 109.1,
+							"low" : 109.1,
+							"volume" : 109.1
+						},
+						{
+							"open" : 109.1,
+							"high" : 109.1,
+							"close" : 109.1,
+							"low" : 109.1,
+							"volume" : 109.1
+						},
+						{
+							"open" : 109.1,
+							"high" : 109.1,
+							"close" : 109.1,
+							"low" : 109.1,
+							"volume" : 109.1
+						},
+						{
+							"open" : 109.1,
+							"high" : 109.1,
+							"close" : 109.1,
+							"low" : 109.1,
+							"volume" : 109.1
+						},
+						{
+							"open" : 109.1,
+							"high" : 109.1,
+							"close" : 109.1,
+							"low" : 109.1,
+							"volume" : 109.1
+						},
+						{
+							"open" : 109.1,
+							"high" : 109.1,
+							"close" : 109.1,
+							"low" : 109.1,
+							"volume" : 109.1
+						},
+						{
+							"open" : 109.1,
+							"high" : 109.1,
+							"close" : 109.1,
+							"low" : 109.1,
+							"volume" : 109.1
+						},
+						{
+							"open" : 109.1,
+							"high" : 109.1,
+							"close" : 109.1,
+							"low" : 109.1,
+							"volume" : 109.1
+						}
+					]};
+			realTimeMiddleware.sendPredictionRequest(obj, () => {});
 			//Install sourcemap for mapping between js & jsx
 			sourceMapSupport.install();
 			//Initialize the history
@@ -70,9 +222,12 @@
 
 			// Route not found error
 			app.use((req, res, next) => {
-				const error = new Error('Not found');
-				error.status = 404;
-				next(error);
+				res.status(404);
+				res.json({
+					error : {
+						message : 'Not found'
+					}
+				});
 			});
 
 			// Other routes errors

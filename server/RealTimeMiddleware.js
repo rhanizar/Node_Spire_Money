@@ -9,6 +9,10 @@ const NEW_NEWS_EVENT = 'NEW_NEWS_EVENT';
 const NEW_STATES_EVENT = 'NEW_STATES_EVENT';
 const JOIN_MSG = 'JOIN_MSG';
 const LEAVE_MSG = 'LEAVE_MSG';
+const PREDICTION_RESPONSE = "PREDICTION_RESPONSE";
+const PREDICTION_REQUEST = "PREDICTION_REQUEST";
+const JOIN_PREDICTION_ROOM = "JOIN_PREDICTION_ROOM";
+const PREDICTION_ROOM = "6425ce37b792b9ce0b98bbb1397793cac43ecb0108f9bc6b4f2360d0165d482e";
 
 class RealTimeMiddleware
 {
@@ -25,6 +29,19 @@ class RealTimeMiddleware
 
 		    socket.on(LEAVE_MSG, function(symbol) {
 		        socket.leave(symbol);
+		    });
+
+		    //socket.emit(PREDICTION_REQUEST, { msg : "My message" });
+
+			socket.on(JOIN_PREDICTION_ROOM, function(room) {
+				if (room == PREDICTION_ROOM)
+		        	socket.join(room);
+		    });
+
+		    socket.on(PREDICTION_RESPONSE, function(data) {
+		    	console.log("data from SPARK :");
+		    	console.log(data);
+		    	console.log("-------------------");
 		    });
 		});
 
@@ -44,6 +61,16 @@ class RealTimeMiddleware
 	{
 		const obj = { symbol : symbol, state : states[symbol]};
 		this.io.emit(NEW_STATES_EVENT, obj); // broadcast
+	}
+
+	sendPredictionRequest(input, callback)
+	{
+		//this.io.sockets.emit(PREDICTION_REQUEST, { msg : "My message" });
+		setInterval (()=>{
+			this.io.to(PREDICTION_ROOM).emit(PREDICTION_REQUEST, { msg : "My message" }); // multicast
+			console.log('Message was sent to '+ PREDICTION_ROOM +' !!');	
+		}, 5000);
+		
 	}
 }
 
